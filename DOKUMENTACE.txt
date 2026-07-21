@@ -1,0 +1,261 @@
+================================================================================
+                    FITNESS APP - KOMPLETNI DOKUMENTACE
+                         Vytvoreno: 10.7.2026
+================================================================================
+
+1. ZAKLADNI INFORMACE
+================================================================================
+Nazev aplikace:  Fitness App
+Balicek:         com.harvis.fitnessapp
+Umisteni:        d:\Harvis\programovani\Mobilni_aplikace\fitness_app\v1.0
+Typ:             Android aplikace (Kotlin)
+Min SDK:         26 (Android 8.0)
+Target SDK:      34 (Android 14)
+
+IDE:             Android Studio
+Jazyk:           Kotlin
+Architektura:    MVVM (Model-View-ViewModel)
+
+
+2. UCEL APLIKACE
+================================================================================
+Aplikace pro sledovani treninku s nasledujicimi funkcemi:
+
+- Treningove varianty (napr. "Nohy", "Hrudnik", "Push day") - neomezeny pocet
+- Cviky v kazde variante - neomezeny pocet
+- Sledovani pri treninku: serie, opakovani, vaha
+- Kalendar pro prirazeni variant ke dnum
+- Obrazky a videa u cviku
+- Historie treninku
+
+
+3. STRUKTURA PROJEKTU
+================================================================================
+
+app/
+├── src/main/
+│   ├── java/com/harvis/fitnessapp/
+│   │   ├── MainActivity.kt              - Hlavni aktivita s navigaci
+│   │   ├── data/
+│   │   │   ├── Entities.kt               - Datove modely (Room entity)
+│   │   │   ├── FitnessDao.kt             - Databazove operace
+│   │   │   └── FitnessDatabase.kt        - Room databaze singleton
+│   │   └── ui/
+│   │       ├── calendar/
+│   │       │   └── CalendarFragment.kt   - Kalendar s treninky
+│   │       ├── variants/
+│   │       │   ├── VariantsFragment.kt   - Seznam variant
+│   │       │   ├── VariantsAdapter.kt    - RecyclerView adapter
+│   │       │   └── VariantsViewModel.kt  - ViewModel pro varianty
+│   │       ├── workout/
+│   │       │   └── WorkoutFragment.kt    - Aktivni trenink
+│   │       └── history/
+│   │           └── HistoryFragment.kt    - Historie treninku
+│   ├── res/
+│   │   ├── layout/                       - XML layouty
+│   │   ├── navigation/nav_graph.xml      - Navigacni graf
+│   │   ├── menu/bottom_nav_menu.xml      - Spodni navigace
+│   │   ├── values/                       - Barvy, stringy, themes
+│   │   ├── drawable/                     - Ikony a grafika
+│   │   └── mipmap-*/                     - Ikony aplikace
+│   └── AndroidManifest.xml
+├── build.gradle                          - Zavislosti modulu
+└── proguard-rules.pro                    - ProGuard pravidla
+
+build.gradle (root)                       - Verze pluginu
+gradle/wrapper/gradle-wrapper.properties  - Verze Gradle
+settings.gradle                           - Nastaveni projektu
+
+
+4. DATOVY MODEL (Room Database)
+================================================================================
+
+WorkoutVariant (workout_variants)
+---------------------------------
+- id: Long (PK, auto)
+- name: String
+- description: String
+- createdAt: Long (timestamp)
+
+Exercise (exercises)
+--------------------
+- id: Long (PK, auto)
+- name: String
+- description: String
+- imagePath: String? (cesta k obrazku)
+- videoPath: String? (cesta k videu)
+- createdAt: Long
+
+VariantExercise (variant_exercises)
+-----------------------------------
+- variantId: Long (FK -> WorkoutVariant)
+- exerciseId: Long (FK -> Exercise)
+- orderIndex: Int (poradi cviku ve variante)
+- PK: (variantId, exerciseId)
+
+WorkoutLog (workout_logs)
+-------------------------
+- id: Long (PK, auto)
+- variantId: Long (FK -> WorkoutVariant)
+- date: Long (datum treninku)
+- notes: String
+- completed: Boolean
+- createdAt: Long
+
+ExerciseSet (exercise_sets)
+---------------------------
+- id: Long (PK, auto)
+- workoutLogId: Long (FK -> WorkoutLog)
+- exerciseId: Long (FK -> Exercise)
+- setNumber: Int (cislo serie 1, 2, 3...)
+- reps: Int (pocet opakovani)
+- weight: Float (vaha v kg)
+- completed: Boolean
+
+
+5. NAVIGACE
+================================================================================
+
+Spodni navigace (BottomNavigationView) se 4 polozkami:
+1. Kalendar (CalendarFragment)    - ic_calendar
+2. Varianty (VariantsFragment)    - ic_fitness
+3. Trenink (WorkoutFragment)      - ic_workout
+4. Historie (HistoryFragment)     - ic_history
+
+
+6. VERZE A ZAVISLOSTI
+================================================================================
+
+build.gradle (root):
+- com.android.application: 8.2.0
+- org.jetbrains.kotlin.android: 1.9.22
+- org.jetbrains.kotlin.kapt: 1.9.22
+
+gradle-wrapper.properties:
+- Gradle: 8.4
+
+app/build.gradle zavislosti:
+- androidx.core:core-ktx:1.12.0
+- androidx.appcompat:appcompat:1.6.1
+- com.google.android.material:material:1.11.0
+- androidx.constraintlayout:constraintlayout:2.1.4
+- androidx.navigation:navigation-fragment-ktx:2.7.6
+- androidx.navigation:navigation-ui-ktx:2.7.6
+- androidx.room:room-runtime:2.6.1
+- androidx.room:room-ktx:2.6.1
+- androidx.room:room-compiler:2.6.1 (kapt)
+- androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2
+- androidx.lifecycle:lifecycle-livedata-ktx:2.6.2
+- androidx.recyclerview:recyclerview:1.3.2
+- com.github.bumptech.glide:glide:4.16.0 (obrazky)
+- androidx.media3:media3-exoplayer:1.2.0 (videa)
+- androidx.media3:media3-ui:1.2.0
+- com.kizitonwose.calendar:view:2.4.1 (kalendar)
+
+
+7. CO JE HOTOVE
+================================================================================
+
+[X] Zakladni struktura projektu
+[X] Room databaze s entitami
+[X] DAO s CRUD operacemi
+[X] Hlavni aktivita s navigaci
+[X] Fragment pro varianty (seznam s pridavanim/mazanim)
+[X] ViewModel pro varianty
+[X] RecyclerView adapter pro varianty
+[X] Zakladni layouty
+[X] Barvy a themes (Material Design 3)
+[X] Ceske texty
+[X] Ikony aplikace (adaptive icons)
+[X] ProGuard pravidla
+
+
+8. CO ZBYVA DODDELAT
+================================================================================
+
+[ ] CalendarFragment - funkcni kalendar s vybiranim dnu
+[ ] Prirazovani variant ke dnum v kalendari
+[ ] Detail varianty - pridavani cviku
+[ ] Seznam cviku s moznosti pridavat/mazat
+[ ] Obrazky a videa u cviku (vyber z galerie, fotoaparat)
+[ ] WorkoutFragment - aktivni trenink
+    - Vyber varianty pro trenink
+    - Zobrazeni cviku
+    - Zadavani serii, opakovani, vahy
+    - Tlacitko "Hotovo" pro dokonceni
+[ ] HistoryFragment - zobrazeni historie
+    - Seznam dokoncených treninku
+    - Detail treninku s vykonem
+[ ] Statistiky (volitelne)
+[ ] Export dat (volitelne)
+
+
+9. JAK SPUSTIT PROJEKT
+================================================================================
+
+1. Otevrit Android Studio
+2. File -> Open -> vybrat slozku:
+   d:\Harvis\programovani\Mobilni_aplikace\fitness_app\v1.0
+3. Pockat na sync Gradle (muze trvat)
+4. Pripojit Android telefon (USB debugging) nebo spustit emulator
+5. Kliknout na zelene tlacitko Play
+
+
+10. RESENI PROBLEMU
+================================================================================
+
+Problem: Gradle sync selhava
+Reseni:
+- File -> Invalidate Caches -> Invalidate and Restart
+- Smazat slozku .gradle v projektu
+- Overit verze v build.gradle souborech (viz sekce 6)
+
+Problem: KSP error "unexpected jvm signature V"
+Reseni: Pouzit KAPT misto KSP (uz opraveno)
+
+Problem: Chybi ikony aplikace
+Reseni: Vytvoreny v mipmap-anydpi-v26 (adaptive icons)
+
+Problem: Android Studio meni verze automaticky
+Reseni: Neprijmat automaticke upgrady, pouzit verze ze sekce 6
+
+
+11. DULEZITE SOUBORY
+================================================================================
+
+Konfigurace:
+- build.gradle (root) - verze pluginu
+- app/build.gradle - zavislosti
+- gradle/wrapper/gradle-wrapper.properties - verze Gradle
+- settings.gradle - nazev projektu
+
+Data:
+- app/src/main/java/com/harvis/fitnessapp/data/Entities.kt
+- app/src/main/java/com/harvis/fitnessapp/data/FitnessDao.kt
+- app/src/main/java/com/harvis/fitnessapp/data/FitnessDatabase.kt
+
+UI:
+- app/src/main/java/com/harvis/fitnessapp/MainActivity.kt
+- app/src/main/java/com/harvis/fitnessapp/ui/variants/VariantsFragment.kt
+- app/src/main/res/layout/*.xml
+- app/src/main/res/navigation/nav_graph.xml
+
+Zdroje:
+- app/src/main/res/values/strings.xml (texty)
+- app/src/main/res/values/colors.xml (barvy)
+- app/src/main/res/values/themes.xml (tema)
+
+
+12. POZNAMKY
+================================================================================
+
+- Aplikace pouziva Material Design 3
+- Tmave tema na pozadi (#1A1A2E)
+- Fialovy akcent (#6200EE)
+- Vsechny texty jsou v cestine
+- Databaze se vytvori automaticky pri prvnim spusteni
+- Data se ukladaji lokalne na zarizeni
+
+================================================================================
+                         Konec dokumentace
+================================================================================

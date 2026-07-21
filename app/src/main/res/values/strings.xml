@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fitness App</string>
+
+    <!-- Navigation -->
+    <string name="nav_calendar">Kalendář</string>
+    <string name="nav_variants">Tréninky</string>
+    <string name="nav_workout">Cvičit</string>
+    <string name="nav_history">Historie</string>
+
+    <!-- Common -->
+    <string name="save">Uložit</string>
+    <string name="cancel">Zrušit</string>
+    <string name="delete">Smazat</string>
+    <string name="edit">Upravit</string>
+    <string name="add">Přidat</string>
+
+    <!-- Variants -->
+    <string name="new_variant">Nová varianta</string>
+    <string name="variant_name">Název varianty</string>
+    <string name="variant_description">Popis (volitelné)</string>
+    <string name="no_variants">Zatím nemáte žádné tréninky.\nKlikněte + pro přidání.</string>
+
+    <!-- Exercises -->
+    <string name="new_exercise">Nový cvik</string>
+    <string name="exercise_name">Název cviku</string>
+    <string name="exercise_description">Popis (volitelné)</string>
+    <string name="add_image">Přidat obrázek</string>
+    <string name="add_video">Přidat video</string>
+    <string name="no_exercises">Žádné cviky.\nKlikněte + pro přidání.</string>
+
+    <!-- Workout -->
+    <string name="sets">Série</string>
+    <string name="reps">Opakování</string>
+    <string name="weight">Váha (kg)</string>
+    <string name="add_set">Přidat sérii</string>
+    <string name="complete_set">Dokončit</string>
+    <string name="finish_workout">Ukončit trénink</string>
+    <string name="select_variant">Vyberte trénink</string>
+
+    <!-- Calendar -->
+    <string name="today">Dnes</string>
+    <string name="assign_workout">Přiřadit trénink</string>
+    <string name="no_workout_planned">Žádný trénink naplánován</string>
+
+    <!-- History -->
+    <string name="no_history">Zatím žádná historie tréninků.</string>
+</resources>
