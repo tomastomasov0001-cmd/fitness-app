@@ -144,4 +144,88 @@ interface FitnessDao {
 
     @Query("DELETE FROM exercise_sets WHERE workoutLogId = :workoutLogId")
     suspend fun deleteSetsForWorkout(workoutLogId: Long)
+
+    // === STATISTIKY ===
+
+    // Celkovy pocet dokoncenych treninku
+    @Query("SELECT COUNT(*) FROM workout_logs WHERE completed = 1")
+    suspend fun getTotalCompletedWorkouts(): Int
+
+    // Pocet treninkovych dni tento mesic
+    @Query("SELECT COUNT(DISTINCT date) FROM workout_logs WHERE completed = 1 AND date >= :startOfMonth AND date <= :endOfMonth")
+    suspend fun getTrainingDaysInMonth(startOfMonth: Long, endOfMonth: Long): Int
+
+    // Vsechny dokoncene treninky serazene podle data
+    @Query("SELECT * FROM workout_logs WHERE completed = 1 ORDER BY date DESC")
+    suspend fun getAllCompletedWorkoutsSync(): List<WorkoutLog>
+
+    // Pocet treninku podle varianty (pro kolacovy graf)
+    @Query("""
+        SELECT v.name as variantName, COUNT(wl.id) as count
+        FROM workout_logs wl
+        INNER JOIN workout_variants v ON wl.variantId = v.id
+        WHERE wl.completed = 1
+        GROUP BY wl.variantId
+        ORDER BY count DESC
+    """)
+    suspend fun getWorkoutCountsByVariant(): List<VariantWorkoutCount>
+
+    // Vsechny serie pro konkretni cvik (pro grafy progresu)
+    @Query("""
+        SELECT es.*, wl.date as workoutDate
+        FROM exercise_sets es
+        INNER JOIN workout_logs wl ON es.workoutLogId = wl.id
+        WHERE es.exerciseId = :exerciseId AND wl.completed = 1
+        ORDER BY wl.date ASC, es.setNumber ASC
+    """)
+    suspend fun getAllSetsForExercise(exerciseId: Long): List<ExerciseSetWithDate>
+
+    // Max vaha pro cvik
+    @Query("""
+        SELECT MAX(es.weight)
+        FROM exercise_sets es
+        INNER JOIN workout_logs wl ON es.workoutLogId = wl.id
+        WHERE es.exerciseId = :exerciseId AND wl.completed = 1
+    """)
+    suspend fun getMaxWeightForExercise(exerciseId: Long): Float?
+
+    // Max opakovani pro cvik
+    @Query("""
+        SELECT MAX(es.reps)
+        FROM exercise_sets es
+        INNER JOIN workout_logs wl ON es.workoutLogId = wl.id
+        WHERE es.exerciseId = :exerciseId AND wl.completed = 1
+    """)
+    suspend fun getMaxRepsForExercise(exerciseId: Long): Int?
+
+    // Vsechny cviky ktere maji nejake serie (pro vyber cviku ve statistikach)
+    @Query("""
+        SELECT DISTINCT e.*
+        FROM exercises e
+        INNER JOIN exercise_sets es ON e.id = es.exerciseId
+        INNER JOIN workout_logs wl ON es.workoutLogId = wl.id
+        WHERE wl.completed = 1
+        ORDER BY e.name ASC
+    """)
+    suspend fun getExercisesWithData(): List<Exercise>
+
+    // Pocet treninku po dnech (pro graf frekvence)
+    @Query("""
+        SELECT date, COUNT(*) as count
+        FROM workout_logs
+        WHERE completed = 1 AND date >= :startDate AND date <= :endDate
+        GROUP BY date
+        ORDER BY date ASC
+    """)
+    suspend fun getWorkoutCountsByDate(startDate: Long, endDate: Long): List<DateWorkoutCount>
+
+    // Vsechny dokoncene treninky pro obdobi (pro heatmapu)
+    @Query("""
+        SELECT date, COUNT(*) as count
+        FROM workout_logs
+        WHERE completed = 1
+        GROUP BY date
+        ORDER BY date ASC
+    """)
+    suspend fun getAllWorkoutDates(): List<DateWorkoutCount>
 }

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Fitness App</string>
+    <string name="app_name">Fitness App 2.0</string>
 
     <!-- Navigation -->
     <string name="nav_calendar">Kalendář</string>
     <string name="nav_variants">Tréninky</string>
     <string name="nav_workout">Cvičit</string>
     <string name="nav_history">Historie</string>
+    <string name="nav_statistics">Statistiky</string>
 
     <!-- Common -->
     <string name="save">Uložit</string>
@@ -45,4 +46,26 @@
 
     <!-- History -->
     <string name="no_history">Zatím žádná historie tréninků.</string>
+
+    <!-- Statistics -->
+    <string name="statistics_title">Statistiky</string>
+    <string name="total_workouts">Celkem tréninků</string>
+    <string name="training_days_month">Tréninkové dny tento měsíc</string>
+    <string name="current_streak">Aktuální série</string>
+    <string name="best_streak">Nejdelší série</string>
+    <string name="days">dní</string>
+    <string name="personal_records">Osobní rekordy</string>
+    <string name="max_weight">Max váha</string>
+    <string name="max_reps">Max opakování</string>
+    <string name="workout_frequency">Frekvence tréninků</string>
+    <string name="workout_distribution">Rozložení tréninků</string>
+    <string name="this_week">Tento týden</string>
+    <string name="this_month">Tento měsíc</string>
+    <string name="this_year">Tento rok</string>
+    <string name="progress">Progrese</string>
+    <string name="volume">Objem</string>
+    <string name="no_data">Zatím žádná data</string>
+    <string name="workouts_count">tréninků</string>
+    <string name="select_exercise">Vyberte cvik</string>
+    <string name="kg">kg</string>
 </resources>

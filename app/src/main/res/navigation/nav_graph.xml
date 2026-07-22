@@ -66,4 +66,26 @@
             app:destination="@id/workoutFragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/statisticsFragment"
+        android:name="com.harvis.fitnessapp.ui.statistics.StatisticsFragment"
+        android:label="@string/nav_statistics"
+        tools:layout="@layout/fragment_statistics">
+
+        <action
+            android:id="@+id/action_statistics_to_exerciseStats"
+            app:destination="@id/exerciseStatsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/exerciseStatsFragment"
+        android:name="com.harvis.fitnessapp.ui.statistics.ExerciseStatsFragment"
+        android:label="@string/progress"
+        tools:layout="@layout/fragment_exercise_stats">
+
+        <argument
+            android:name="exerciseId"
+            app:argType="long" />
+    </fragment>
+
 </navigation>

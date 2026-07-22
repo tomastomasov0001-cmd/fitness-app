@@ -144,3 +144,36 @@ data class VariantWithCount(
     val description: String,
     val exerciseCount: Int
 )
+
+// === STATISTIKY ===
+
+/**
+ * Pocet treninku podle varianty - pro kolacovy graf
+ */
+data class VariantWorkoutCount(
+    val variantName: String,
+    val count: Int
+)
+
+/**
+ * Serie cviku s datem treninku - pro grafy progresu
+ */
+data class ExerciseSetWithDate(
+    val id: Long,
+    val workoutLogId: Long,
+    val exerciseId: Long,
+    val setNumber: Int,
+    val reps: Int,
+    val weight: Float,
+    val timeSeconds: Int,
+    val completed: Boolean,
+    val workoutDate: Long
+)
+
+/**
+ * Pocet treninku na datum - pro graf frekvence a heatmapu
+ */
+data class DateWorkoutCount(
+    val date: Long,
+    val count: Int
+)
