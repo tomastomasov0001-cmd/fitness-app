@@ -115,21 +115,6 @@
     <string name="compared_to_last_month_negative">%d compared to last month</string>
     <string name="same_as_last_month">Same as last month</string>
 
-    <!-- Weekdays short -->
-    <string name="weekday_mon">Mon</string>
-    <string name="weekday_tue">Tue</string>
-    <string name="weekday_wed">Wed</string>
-    <string name="weekday_thu">Thu</string>
-    <string name="weekday_fri">Fri</string>
-    <string name="weekday_sat">Sat</string>
-    <string name="weekday_sun">Sun</string>
-
-    <!-- Navigation descriptions -->
-    <string name="import_data">Import</string>
-    <string name="export_data">Export</string>
-    <string name="previous_month">Previous month</string>
-    <string name="next_month">Next month</string>
-
     <!-- Export/Import -->
     <string name="export_completed">Export completed</string>
     <string name="error_saving">Error saving</string>
@@ -137,8 +122,4 @@
     <string name="invalid_file_format">Invalid file format</string>
     <string name="import_success">Imported: %1$d workouts, %2$d exercises</string>
     <string name="import_error">Import error: %s</string>
-    <string name="delete_confirm">Really delete \'%s\'?</string>
-    <string name="max_weight_kg">Max weight (kg)</string>
-    <string name="set_label">Set %d:</string>
-    <string name="reps_short">reps</string>
 </resources>

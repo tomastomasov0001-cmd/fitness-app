@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fitness App 2.0</string>
+
+    <!-- Navigation -->
+    <string name="nav_calendar">Calendrier</string>
+    <string name="nav_variants">Entraînements</string>
+    <string name="nav_workout">S\'entraîner</string>
+    <string name="nav_history">Historique</string>
+    <string name="nav_statistics">Statistiques</string>
+
+    <!-- Common -->
+    <string name="save">Enregistrer</string>
+    <string name="cancel">Annuler</string>
+    <string name="delete">Supprimer</string>
+    <string name="edit">Modifier</string>
+    <string name="add">Ajouter</string>
+    <string name="back">Retour</string>
+    <string name="finish">Terminer</string>
+    <string name="continue_text">Continuer</string>
+
+    <!-- Variants -->
+    <string name="new_variant">Nouvel entraînement</string>
+    <string name="variant_name">Nom de l\'entraînement</string>
+    <string name="variant_description">Description (facultatif)</string>
+    <string name="no_variants">Pas encore d\'entraînements.\nAppuyez sur + pour en ajouter.</string>
+    <string name="my_workouts">Mes entraînements</string>
+    <string name="exercises_in_workout">Exercices dans cet entraînement :</string>
+    <string name="no_description">Pas de description</string>
+    <string name="exercise_count_zero">Aucun exercice</string>
+    <string name="exercise_count_one">1 exercice</string>
+    <string name="exercise_count_many">%d exercices</string>
+
+    <!-- Exercises -->
+    <string name="new_exercise">Nouvel exercice</string>
+    <string name="exercise_name">Nom de l\'exercice</string>
+    <string name="exercise_description">Description (facultatif)</string>
+    <string name="add_image">Ajouter une image</string>
+    <string name="add_video">Ajouter une vidéo</string>
+    <string name="no_exercises">Aucun exercice.\nAppuyez sur + pour en ajouter.</string>
+    <string name="enter_exercise_name">Entrez le nom de l\'exercice</string>
+    <string name="remove_exercise">Supprimer l\'exercice</string>
+    <string name="remove_exercise_confirm">Supprimer \'%s\' de cet entraînement ?</string>
+
+    <!-- Exercise types -->
+    <string name="record_type">Type d\'enregistrement :</string>
+    <string name="has_sets">Séries (répétitions multiples)</string>
+    <string name="has_reps">Répétitions (ex. squats, pompes)</string>
+    <string name="has_weight">Poids (ex. développé couché, soulevé de terre)</string>
+    <string name="has_time">Temps (ex. course, planche)</string>
+
+    <!-- Workout -->
+    <string name="sets">Séries</string>
+    <string name="reps">Répétitions</string>
+    <string name="weight">Poids (kg)</string>
+    <string name="time_label">Temps</string>
+    <string name="add_set">Ajouter une série</string>
+    <string name="add_set_short">+ Série</string>
+    <string name="complete_set">Terminé</string>
+    <string name="finish_workout">Terminer l\'entraînement</string>
+    <string name="select_variant">Sélectionner un entraînement</string>
+    <string name="no_workouts_create">Pas encore d\'entraînements.\nCréez-les dans l\'onglet \'Entraînements\'.</string>
+    <string name="set_number">Série %d :</string>
+
+    <!-- Workout dialog -->
+    <string name="finish_workout_title">Terminer l\'entraînement ?</string>
+    <string name="finish_workout_message">Enregistrer l\'entraînement et terminer ?</string>
+    <string name="cancel_workout">Annuler l\'entraînement</string>
+
+    <!-- Calendar -->
+    <string name="today">Aujourd\'hui</string>
+    <string name="assign_workout">Assigner un entraînement</string>
+    <string name="add_another_workout">Ajouter un autre entraînement</string>
+    <string name="no_workout_planned">Aucun entraînement prévu</string>
+    <string name="remove_workout">Supprimer l\'entraînement</string>
+    <string name="remove_workout_confirm">Voulez-vous vraiment supprimer l\'entraînement \"%s\" de ce jour ?</string>
+    <string name="no_workouts_title">Aucun entraînement</string>
+    <string name="no_workouts_message">Créez d\'abord un entraînement dans l\'onglet \'Entraînements\'.</string>
+    <string name="limit_reached">Limite atteinte</string>
+    <string name="max_workouts_per_day">Vous pouvez ajouter jusqu\'à 4 entraînements par jour.</string>
+    <string name="unknown_workout">Entraînement inconnu</string>
+    <string name="detail">Détail</string>
+    <string name="start">Démarrer</string>
+
+    <!-- History -->
+    <string name="history_title">Historique des entraînements</string>
+    <string name="no_history">Pas encore d\'historique d\'entraînements.</string>
+    <string name="completed">Terminé</string>
+
+    <!-- Statistics -->
+    <string name="statistics_title">Statistiques</string>
+    <string name="total_workouts">Total des entraînements</string>
+    <string name="training_days_month">Jours d\'entraînement ce mois</string>
+    <string name="current_streak">Série actuelle</string>
+    <string name="best_streak">Meilleure série</string>
+    <string name="days">jours</string>
+    <string name="personal_records">Records personnels</string>
+    <string name="max_weight">Poids max</string>
+    <string name="max_reps">Reps max</string>
+    <string name="workout_frequency">Fréquence des entraînements</string>
+    <string name="workout_distribution">Répartition des entraînements</string>
+    <string name="this_week">Cette semaine</string>
+    <string name="this_month">Ce mois</string>
+    <string name="this_year">Cette année</string>
+    <string name="progress">Progression</string>
+    <string name="volume">Volume</string>
+    <string name="no_data">Pas encore de données</string>
+    <string name="workouts_count">entraînements</string>
+    <string name="select_exercise">Sélectionner un exercice</string>
+    <string name="kg">kg</string>
+    <string name="weight_progress">Progression du poids</string>
+    <string name="volume_progress">Progression du volume (poids × reps)</string>
+    <string name="last_workout">Dernier entraînement</string>
+    <string name="compared_to_last_month_positive">+%d par rapport au mois dernier</string>
+    <string name="compared_to_last_month_negative">%d par rapport au mois dernier</string>
+    <string name="same_as_last_month">Identique au mois dernier</string>
+
+    <!-- Weekdays short -->
+    <string name="weekday_mon">Lun</string>
+    <string name="weekday_tue">Mar</string>
+    <string name="weekday_wed">Mer</string>
+    <string name="weekday_thu">Jeu</string>
+    <string name="weekday_fri">Ven</string>
+    <string name="weekday_sat">Sam</string>
+    <string name="weekday_sun">Dim</string>
+
+    <!-- Navigation descriptions -->
+    <string name="import_data">Importer</string>
+    <string name="export_data">Exporter</string>
+    <string name="previous_month">Mois précédent</string>
+    <string name="next_month">Mois suivant</string>
+
+    <!-- Export/Import -->
+    <string name="export_completed">Exportation terminée</string>
+    <string name="error_saving">Erreur lors de l\'enregistrement</string>
+    <string name="error_reading_file">Erreur lors de la lecture du fichier</string>
+    <string name="invalid_file_format">Format de fichier non valide</string>
+    <string name="import_success">Importé : %1$d entraînements, %2$d exercices</string>
+    <string name="import_error">Erreur d\'importation : %s</string>
+    <string name="delete_confirm">Vraiment supprimer \'%s\' ?</string>
+    <string name="max_weight_kg">Poids max (kg)</string>
+    <string name="set_label">Série %d :</string>
+    <string name="reps_short">reps</string>
+</resources>

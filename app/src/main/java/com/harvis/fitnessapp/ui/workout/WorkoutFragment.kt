@@ -141,15 +141,15 @@ class WorkoutFragment : Fragment() {
     private fun updateViewModeUI() {
         when {
             isViewOnly -> {
-                binding.finishWorkoutButton.text = "Zpět"
+                binding.finishWorkoutButton.text = getString(R.string.back)
                 binding.editWorkoutButton.visibility = View.VISIBLE
             }
             isEditingCompleted -> {
-                binding.finishWorkoutButton.text = "Uložit"
+                binding.finishWorkoutButton.text = getString(R.string.save)
                 binding.editWorkoutButton.visibility = View.GONE
             }
             else -> {
-                binding.finishWorkoutButton.text = "Dokončit"
+                binding.finishWorkoutButton.text = getString(R.string.finish)
                 binding.editWorkoutButton.visibility = View.GONE
             }
         }
@@ -433,17 +433,17 @@ class WorkoutFragment : Fragment() {
 
     private fun showFinishDialog() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Dokončit trénink?")
-            .setMessage("Uložit trénink a ukončit?")
-            .setPositiveButton("Dokončit") { _, _ ->
+            .setTitle(R.string.finish_workout_title)
+            .setMessage(R.string.finish_workout_message)
+            .setPositiveButton(R.string.finish) { _, _ ->
                 viewModel.finishWorkout()
                 findNavController().navigate(R.id.calendarFragment)
             }
-            .setNegativeButton("Zrušit trénink") { _, _ ->
+            .setNegativeButton(R.string.cancel_workout) { _, _ ->
                 viewModel.cancelWorkout()
                 findNavController().navigate(R.id.calendarFragment)
             }
-            .setNeutralButton("Pokračovat", null)
+            .setNeutralButton(R.string.continue_text, null)
             .show()
     }
 

@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:minWidth="0dp"
-        android:text="Detail"
+        android:text="@string/detail"
         android:textSize="12sp"
         android:visibility="gone"
         style="@style/Widget.MaterialComponents.Button.TextButton" />
@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:minWidth="0dp"
-        android:text="Start"
+        android:text="@string/start"
         android:textSize="12sp"
         style="@style/Widget.MaterialComponents.Button.TextButton" />
 

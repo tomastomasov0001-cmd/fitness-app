@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.harvis.fitnessapp.FitnessApp
+import com.harvis.fitnessapp.R
 import com.harvis.fitnessapp.data.BackupData
 import com.harvis.fitnessapp.data.BackupHelper
 import com.harvis.fitnessapp.data.Exercise
@@ -131,7 +132,7 @@ class VariantsViewModel(application: Application) : AndroidViewModel(application
             try {
                 val backup = BackupHelper.fromJson(json)
                 if (backup == null) {
-                    _importResult.value = ImportResult(false, "Neplatný formát souboru")
+                    _importResult.value = ImportResult(false, getApplication<Application>().getString(R.string.invalid_file_format))
                     return@launch
                 }
 
@@ -189,10 +190,10 @@ class VariantsViewModel(application: Application) : AndroidViewModel(application
 
                 _importResult.value = ImportResult(
                     true,
-                    "Importováno: ${backup.variants.size} tréninků, ${backup.exercises.size} cviků"
+                    getApplication<Application>().getString(R.string.import_success, backup.variants.size, backup.exercises.size)
                 )
             } catch (e: Exception) {
-                _importResult.value = ImportResult(false, "Chyba při importu: ${e.message}")
+                _importResult.value = ImportResult(false, getApplication<Application>().getString(R.string.import_error, e.message ?: ""))
             }
         }
     }

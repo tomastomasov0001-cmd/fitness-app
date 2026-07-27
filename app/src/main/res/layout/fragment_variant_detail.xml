@@ -26,7 +26,7 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_back"
-            android:contentDescription="Zpět" />
+            android:contentDescription="@string/back" />
 
         <TextView
             android:id="@+id/variantTitle"
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginHorizontal="8dp"
-            android:text="Název tréninku"
+            android:text="@string/variant_name"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/on_surface"
@@ -56,7 +56,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="Cviky v tomto tréninku:"
+        android:text="@string/exercises_in_workout"
         android:textSize="16sp"
         android:textColor="@color/on_surface_secondary"
         app:layout_constraintTop_toBottomOf="@id/toolbar"

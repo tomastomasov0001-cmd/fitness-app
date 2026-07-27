@@ -118,7 +118,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Progrese váhy"
+                    android:text="@string/weight_progress"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="12dp" />
@@ -147,7 +147,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Progrese objemu (váha × opakování)"
+                    android:text="@string/volume_progress"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="12dp" />
@@ -176,7 +176,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Poslední trénink"
+                    android:text="@string/last_workout"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="12dp" />

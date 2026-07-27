@@ -24,7 +24,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Moje tréninky"
+            android:text="@string/my_workouts"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/on_surface" />
@@ -35,7 +35,7 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_import"
-            android:contentDescription="Import"
+            android:contentDescription="@string/import_data"
             app:tint="@color/on_surface" />
 
         <ImageButton
@@ -44,7 +44,7 @@
             android:layout_height="48dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_export"
-            android:contentDescription="Export"
+            android:contentDescription="@string/export_data"
             app:tint="@color/on_surface" />
 
     </LinearLayout>

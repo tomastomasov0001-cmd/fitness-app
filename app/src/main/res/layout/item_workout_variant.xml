@@ -30,7 +30,7 @@
                 android:id="@+id/variantName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Název tréninku"
+                android:text="@string/variant_name"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/on_surface" />
@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Popis"
+                android:text="@string/no_description"
                 android:textSize="14sp"
                 android:textColor="@color/on_surface_secondary"
                 android:visibility="gone" />

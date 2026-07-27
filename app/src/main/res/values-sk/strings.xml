@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fitness App 2.0</string>
+
+    <!-- Navigation -->
+    <string name="nav_calendar">Kalendár</string>
+    <string name="nav_variants">Tréningy</string>
+    <string name="nav_workout">Cvičiť</string>
+    <string name="nav_history">História</string>
+    <string name="nav_statistics">Štatistiky</string>
+
+    <!-- Common -->
+    <string name="save">Uložiť</string>
+    <string name="cancel">Zrušiť</string>
+    <string name="delete">Zmazať</string>
+    <string name="edit">Upraviť</string>
+    <string name="add">Pridať</string>
+    <string name="back">Späť</string>
+    <string name="finish">Dokončiť</string>
+    <string name="continue_text">Pokračovať</string>
+
+    <!-- Variants -->
+    <string name="new_variant">Nový tréning</string>
+    <string name="variant_name">Názov tréningu</string>
+    <string name="variant_description">Popis (voliteľné)</string>
+    <string name="no_variants">Zatiaľ nemáte žiadne tréningy.\nKliknite + pre pridanie.</string>
+    <string name="my_workouts">Moje tréningy</string>
+    <string name="exercises_in_workout">Cviky v tomto tréningu:</string>
+    <string name="no_description">Žiadny popis</string>
+    <string name="exercise_count_zero">Žiadne cviky</string>
+    <string name="exercise_count_one">1 cvik</string>
+    <string name="exercise_count_many">%d cvikov</string>
+
+    <!-- Exercises -->
+    <string name="new_exercise">Nový cvik</string>
+    <string name="exercise_name">Názov cviku</string>
+    <string name="exercise_description">Popis (voliteľné)</string>
+    <string name="add_image">Pridať obrázok</string>
+    <string name="add_video">Pridať video</string>
+    <string name="no_exercises">Žiadne cviky.\nKliknite + pre pridanie.</string>
+    <string name="enter_exercise_name">Zadajte názov cviku</string>
+    <string name="remove_exercise">Odstrániť cvik</string>
+    <string name="remove_exercise_confirm">Odstrániť \'%s\' z tohto tréningu?</string>
+
+    <!-- Exercise types -->
+    <string name="record_type">Typ záznamu:</string>
+    <string name="has_sets">Série (viac opakovaní cviku)</string>
+    <string name="has_reps">Opakovania (napr. drepy, kliky)</string>
+    <string name="has_weight">Váha (napr. bench press, mŕtvy ťah)</string>
+    <string name="has_time">Čas (napr. beh, plank)</string>
+
+    <!-- Workout -->
+    <string name="sets">Série</string>
+    <string name="reps">Opakovania</string>
+    <string name="weight">Váha (kg)</string>
+    <string name="time_label">Čas</string>
+    <string name="add_set">Pridať sériu</string>
+    <string name="add_set_short">+ Séria</string>
+    <string name="complete_set">Dokončiť</string>
+    <string name="finish_workout">Ukončiť tréning</string>
+    <string name="select_variant">Vyberte tréning</string>
+    <string name="no_workouts_create">Zatiaľ nemáte žiadne tréningy.\nVytvorte ich v záložke \'Tréningy\'.</string>
+    <string name="set_number">Séria %d:</string>
+
+    <!-- Workout dialog -->
+    <string name="finish_workout_title">Dokončiť tréning?</string>
+    <string name="finish_workout_message">Uložiť tréning a ukončiť?</string>
+    <string name="cancel_workout">Zrušiť tréning</string>
+
+    <!-- Calendar -->
+    <string name="today">Dnes</string>
+    <string name="assign_workout">Priradiť tréning</string>
+    <string name="add_another_workout">Pridať ďalší tréning</string>
+    <string name="no_workout_planned">Žiadny tréning naplánovaný</string>
+    <string name="remove_workout">Odstrániť tréning</string>
+    <string name="remove_workout_confirm">Naozaj chcete odstrániť tréning \"%s\" z tohto dňa?</string>
+    <string name="no_workouts_title">Žiadne tréningy</string>
+    <string name="no_workouts_message">Najskôr vytvorte tréning v záložke \'Tréningy\'.</string>
+    <string name="limit_reached">Limit dosiahnutý</string>
+    <string name="max_workouts_per_day">Na jeden deň je možné pridať maximálne 4 tréningy.</string>
+    <string name="unknown_workout">Neznámy tréning</string>
+    <string name="detail">Detail</string>
+    <string name="start">Štart</string>
+
+    <!-- History -->
+    <string name="history_title">História tréningov</string>
+    <string name="no_history">Zatiaľ žiadna história tréningov.</string>
+    <string name="completed">Dokončené</string>
+
+    <!-- Statistics -->
+    <string name="statistics_title">Štatistiky</string>
+    <string name="total_workouts">Celkom tréningov</string>
+    <string name="training_days_month">Tréningové dni tento mesiac</string>
+    <string name="current_streak">Aktuálna séria</string>
+    <string name="best_streak">Najdlhšia séria</string>
+    <string name="days">dní</string>
+    <string name="personal_records">Osobné rekordy</string>
+    <string name="max_weight">Max váha</string>
+    <string name="max_reps">Max opakovania</string>
+    <string name="workout_frequency">Frekvencia tréningov</string>
+    <string name="workout_distribution">Rozloženie tréningov</string>
+    <string name="this_week">Tento týždeň</string>
+    <string name="this_month">Tento mesiac</string>
+    <string name="this_year">Tento rok</string>
+    <string name="progress">Progresia</string>
+    <string name="volume">Objem</string>
+    <string name="no_data">Zatiaľ žiadne dáta</string>
+    <string name="workouts_count">tréningov</string>
+    <string name="select_exercise">Vyberte cvik</string>
+    <string name="kg">kg</string>
+    <string name="weight_progress">Progresia váhy</string>
+    <string name="volume_progress">Progresia objemu (váha × opakovania)</string>
+    <string name="last_workout">Posledný tréning</string>
+    <string name="compared_to_last_month_positive">+%d oproti minulému mesiacu</string>
+    <string name="compared_to_last_month_negative">%d oproti minulému mesiacu</string>
+    <string name="same_as_last_month">Rovnako ako minulý mesiac</string>
+
+    <!-- Weekdays short -->
+    <string name="weekday_mon">Po</string>
+    <string name="weekday_tue">Ut</string>
+    <string name="weekday_wed">St</string>
+    <string name="weekday_thu">Št</string>
+    <string name="weekday_fri">Pi</string>
+    <string name="weekday_sat">So</string>
+    <string name="weekday_sun">Ne</string>
+
+    <!-- Navigation descriptions -->
+    <string name="import_data">Import</string>
+    <string name="export_data">Export</string>
+    <string name="previous_month">Predchádzajúci mesiac</string>
+    <string name="next_month">Ďalší mesiac</string>
+
+    <!-- Export/Import -->
+    <string name="export_completed">Export dokončený</string>
+    <string name="error_saving">Chyba pri ukladaní</string>
+    <string name="error_reading_file">Chyba pri čítaní súboru</string>
+    <string name="invalid_file_format">Neplatný formát súboru</string>
+    <string name="import_success">Importované: %1$d tréningov, %2$d cvikov</string>
+    <string name="import_error">Chyba pri importe: %s</string>
+    <string name="delete_confirm">Naozaj zmazať \'%s\'?</string>
+    <string name="max_weight_kg">Max váha (kg)</string>
+    <string name="set_label">Séria %d:</string>
+    <string name="reps_short">opak.</string>
+</resources>

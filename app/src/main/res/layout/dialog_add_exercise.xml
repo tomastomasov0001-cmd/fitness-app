@@ -46,7 +46,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Typ záznamu:"
+        android:text="@string/record_type"
         android:textSize="14sp"
         android:textColor="@color/on_surface_secondary" />
 
@@ -54,7 +54,7 @@
         android:id="@+id/hasSetsCheckbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Série (více opakování cviku)"
+        android:text="@string/has_sets"
         android:checked="true" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -78,21 +78,21 @@
         android:id="@+id/hasRepsCheckbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Opakování (např. dřepy, kliky)"
+        android:text="@string/has_reps"
         android:checked="true" />
 
     <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/hasWeightCheckbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Váha (např. bench press, mrtvý tah)"
+        android:text="@string/has_weight"
         android:checked="true" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/hasTimeCheckbox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Čas (např. běh, plank)"
+            android:text="@string/has_time"
             android:checked="false" />
 
     </LinearLayout>

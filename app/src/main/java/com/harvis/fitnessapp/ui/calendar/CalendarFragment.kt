@@ -214,7 +214,7 @@ class CalendarFragment : Fragment() {
                 binding.assignWorkoutButton.visibility = View.GONE
             } else {
                 binding.assignWorkoutButton.visibility = View.VISIBLE
-                binding.assignWorkoutButton.text = "Přidat další trénink"
+                binding.assignWorkoutButton.text = getString(R.string.add_another_workout)
             }
 
             currentWorkoutLogs.forEach { log ->
@@ -244,7 +244,7 @@ class CalendarFragment : Fragment() {
                         // Dokončený trénink - zobrazit tlačítko Editovat
                         startButton.visibility = View.GONE
                         viewButton.visibility = View.VISIBLE
-                        viewButton.text = "Editovat"
+                        viewButton.text = getString(R.string.edit)
                         viewButton.setOnClickListener {
                             val bundle = bundleOf(
                                 "variantId" to log.variantId,
@@ -271,12 +271,12 @@ class CalendarFragment : Fragment() {
                         showDeleteConfirmDialog(log, variant.name)
                     }
                 } else {
-                    workoutName.text = "Neznámý trénink"
+                    workoutName.text = getString(R.string.unknown_workout)
                     colorIndicator.visibility = View.GONE
                     startButton.visibility = View.GONE
                     viewButton.visibility = View.GONE
                     deleteButton.setOnClickListener {
-                        showDeleteConfirmDialog(log, "Neznámý trénink")
+                        showDeleteConfirmDialog(log, getString(R.string.unknown_workout))
                     }
                 }
 
@@ -290,7 +290,7 @@ class CalendarFragment : Fragment() {
         val dateMillis = selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
         if (selectedDate == today) {
-            binding.selectedDateText.text = "Dnes - ${dateFormat.format(Date(dateMillis))}"
+            binding.selectedDateText.text = "${getString(R.string.today)} - ${dateFormat.format(Date(dateMillis))}"
         } else {
             binding.selectedDateText.text = dateFormat.format(Date(dateMillis))
         }
@@ -303,9 +303,9 @@ class CalendarFragment : Fragment() {
 
     private fun showDeleteConfirmDialog(log: WorkoutLog, workoutName: String) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Odebrat trénink")
-            .setMessage("Opravdu chcete odebrat trénink \"$workoutName\" z tohoto dne?")
-            .setPositiveButton("Odebrat") { _, _ ->
+            .setTitle(R.string.remove_workout)
+            .setMessage(getString(R.string.remove_workout_confirm, workoutName))
+            .setPositiveButton(R.string.delete) { _, _ ->
                 val dateMillis = selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
                 viewModel.deleteWorkoutLog(log.id, dateMillis)
                 // Refresh calendar to update indicators
@@ -320,8 +320,8 @@ class CalendarFragment : Fragment() {
     private fun showAssignWorkoutDialog() {
         if (cachedVariants.isEmpty()) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Žádné tréninky")
-                .setMessage("Nejprve vytvořte trénink v záložce 'Tréninky'.")
+                .setTitle(R.string.no_workouts_title)
+                .setMessage(R.string.no_workouts_message)
                 .setPositiveButton("OK", null)
                 .show()
             return
@@ -329,8 +329,8 @@ class CalendarFragment : Fragment() {
 
         if (currentWorkoutLogs.size >= 4) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Limit dosažen")
-                .setMessage("Na jeden den lze přidat maximálně 4 tréninky.")
+                .setTitle(R.string.limit_reached)
+                .setMessage(R.string.max_workouts_per_day)
                 .setPositiveButton("OK", null)
                 .show()
             return

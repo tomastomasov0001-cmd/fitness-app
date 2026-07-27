@@ -91,9 +91,9 @@ class StatisticsFragment : Fragment() {
         viewModel.monthlyStats.observe(viewLifecycleOwner) { stats ->
             binding.tvMonthWorkouts.text = stats.workoutsThisMonth.toString()
             val changeText = when {
-                stats.change > 0 -> "+${stats.change} oproti minulému měsíci"
-                stats.change < 0 -> "${stats.change} oproti minulému měsíci"
-                else -> "Stejně jako minulý měsíc"
+                stats.change > 0 -> getString(R.string.compared_to_last_month_positive, stats.change)
+                stats.change < 0 -> getString(R.string.compared_to_last_month_negative, stats.change)
+                else -> getString(R.string.same_as_last_month)
             }
             binding.tvMonthChange.text = changeText
             binding.tvMonthChange.setTextColor(

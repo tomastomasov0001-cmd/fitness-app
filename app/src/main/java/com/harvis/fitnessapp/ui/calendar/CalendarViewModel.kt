@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.harvis.fitnessapp.FitnessApp
+import com.harvis.fitnessapp.R
 import com.harvis.fitnessapp.data.WorkoutLog
 import com.harvis.fitnessapp.data.WorkoutVariant
 import kotlinx.coroutines.launch
@@ -79,7 +80,7 @@ class CalendarViewModel(application: Application) : AndroidViewModel(application
             if (variant != null && index >= 0) {
                 result.value = "${index + 1}. ${variant.name}"
             } else {
-                result.value = variant?.name ?: "Neznámý"
+                result.value = variant?.name ?: getApplication<Application>().getString(R.string.unknown_workout)
             }
         }
         return result

@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.harvis.fitnessapp.R
 import com.harvis.fitnessapp.data.VariantWithCount
 import com.harvis.fitnessapp.databinding.ItemVariantBinding
 
@@ -54,13 +55,13 @@ class VariantsAdapter(
                 ?: GradientDrawable().also { binding.variantNumber.background = it }
             drawable.setColor(color)
             drawable.shape = GradientDrawable.OVAL
-            binding.variantDescription.text = variant.description.ifEmpty { "Žádný popis" }
+            val context = binding.root.context
+            binding.variantDescription.text = variant.description.ifEmpty { context.getString(R.string.no_description) }
 
             val countText = when {
-                variant.exerciseCount == 0 -> "Žádné cviky"
-                variant.exerciseCount == 1 -> "1 cvik"
-                variant.exerciseCount in 2..4 -> "${variant.exerciseCount} cviky"
-                else -> "${variant.exerciseCount} cviků"
+                variant.exerciseCount == 0 -> context.getString(R.string.exercise_count_zero)
+                variant.exerciseCount == 1 -> context.getString(R.string.exercise_count_one)
+                else -> context.getString(R.string.exercise_count_many, variant.exerciseCount)
             }
             binding.exerciseCount.text = countText
 

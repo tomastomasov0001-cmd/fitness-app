@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Vyberte trénink"
+            android:text="@string/select_variant"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/on_surface" />
@@ -36,7 +36,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Zatím nemáte žádné tréninky.\nVytvořte je v záložce 'Tréninky'."
+            android:text="@string/no_workouts_create"
             android:textSize="16sp"
             android:textColor="@color/on_surface_secondary"
             android:textAlignment="center"
@@ -66,7 +66,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Název tréninku"
+                android:text="@string/variant_name"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/on_surface" />
@@ -75,7 +75,7 @@
                 android:id="@+id/editWorkoutButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Upravit"
+                android:text="@string/edit"
                 android:visibility="gone"
                 style="@style/Widget.MaterialComponents.Button.TextButton" />
 
@@ -83,7 +83,7 @@
                 android:id="@+id/finishWorkoutButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dokončit"
+                android:text="@string/finish"
                 style="@style/Widget.MaterialComponents.Button.TextButton" />
 
         </LinearLayout>

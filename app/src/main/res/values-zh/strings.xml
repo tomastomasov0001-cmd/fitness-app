@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">健身应用 2.0</string>
+
+    <!-- Navigation -->
+    <string name="nav_calendar">日历</string>
+    <string name="nav_variants">训练</string>
+    <string name="nav_workout">开始训练</string>
+    <string name="nav_history">历史</string>
+    <string name="nav_statistics">统计</string>
+
+    <!-- Common -->
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="delete">删除</string>
+    <string name="edit">编辑</string>
+    <string name="add">添加</string>
+    <string name="back">返回</string>
+    <string name="finish">完成</string>
+    <string name="continue_text">继续</string>
+
+    <!-- Variants -->
+    <string name="new_variant">新训练</string>
+    <string name="variant_name">训练名称</string>
+    <string name="variant_description">描述（可选）</string>
+    <string name="no_variants">暂无训练。\n点击 + 添加。</string>
+    <string name="my_workouts">我的训练</string>
+    <string name="exercises_in_workout">此训练中的动作：</string>
+    <string name="no_description">无描述</string>
+    <string name="exercise_count_zero">无动作</string>
+    <string name="exercise_count_one">1个动作</string>
+    <string name="exercise_count_many">%d个动作</string>
+
+    <!-- Exercises -->
+    <string name="new_exercise">新动作</string>
+    <string name="exercise_name">动作名称</string>
+    <string name="exercise_description">描述（可选）</string>
+    <string name="add_image">添加图片</string>
+    <string name="add_video">添加视频</string>
+    <string name="no_exercises">无动作。\n点击 + 添加。</string>
+    <string name="enter_exercise_name">请输入动作名称</string>
+    <string name="remove_exercise">移除动作</string>
+    <string name="remove_exercise_confirm">从此训练中移除"%s"？</string>
+
+    <!-- Exercise types -->
+    <string name="record_type">记录类型：</string>
+    <string name="has_sets">组数（多组重复）</string>
+    <string name="has_reps">次数（如深蹲、俯卧撑）</string>
+    <string name="has_weight">重量（如卧推、硬拉）</string>
+    <string name="has_time">时间（如跑步、平板支撑）</string>
+
+    <!-- Workout -->
+    <string name="sets">组数</string>
+    <string name="reps">次数</string>
+    <string name="weight">重量（公斤）</string>
+    <string name="time_label">时间</string>
+    <string name="add_set">添加一组</string>
+    <string name="add_set_short">+ 组</string>
+    <string name="complete_set">完成</string>
+    <string name="finish_workout">结束训练</string>
+    <string name="select_variant">选择训练</string>
+    <string name="no_workouts_create">暂无训练。\n请在"训练"标签中创建。</string>
+    <string name="set_number">第%d组：</string>
+
+    <!-- Workout dialog -->
+    <string name="finish_workout_title">结束训练？</string>
+    <string name="finish_workout_message">保存训练并结束？</string>
+    <string name="cancel_workout">取消训练</string>
+
+    <!-- Calendar -->
+    <string name="today">今天</string>
+    <string name="assign_workout">分配训练</string>
+    <string name="add_another_workout">添加另一个训练</string>
+    <string name="no_workout_planned">暂无计划训练</string>
+    <string name="remove_workout">移除训练</string>
+    <string name="remove_workout_confirm">确定要从这一天移除训练"%s"吗？</string>
+    <string name="no_workouts_title">无训练</string>
+    <string name="no_workouts_message">请先在"训练"标签中创建训练。</string>
+    <string name="limit_reached">已达上限</string>
+    <string name="max_workouts_per_day">每天最多可添加4个训练。</string>
+    <string name="unknown_workout">未知训练</string>
+    <string name="detail">详情</string>
+    <string name="start">开始</string>
+
+    <!-- History -->
+    <string name="history_title">训练历史</string>
+    <string name="no_history">暂无训练历史。</string>
+    <string name="completed">已完成</string>
+
+    <!-- Statistics -->
+    <string name="statistics_title">统计</string>
+    <string name="total_workouts">总训练次数</string>
+    <string name="training_days_month">本月训练天数</string>
+    <string name="current_streak">当前连续天数</string>
+    <string name="best_streak">最长连续天数</string>
+    <string name="days">天</string>
+    <string name="personal_records">个人记录</string>
+    <string name="max_weight">最大重量</string>
+    <string name="max_reps">最多次数</string>
+    <string name="workout_frequency">训练频率</string>
+    <string name="workout_distribution">训练分布</string>
+    <string name="this_week">本周</string>
+    <string name="this_month">本月</string>
+    <string name="this_year">今年</string>
+    <string name="progress">进度</string>
+    <string name="volume">训练量</string>
+    <string name="no_data">暂无数据</string>
+    <string name="workouts_count">次训练</string>
+    <string name="select_exercise">选择动作</string>
+    <string name="kg">公斤</string>
+    <string name="weight_progress">重量进度</string>
+    <string name="volume_progress">训练量进度（重量×次数）</string>
+    <string name="last_workout">上次训练</string>
+    <string name="compared_to_last_month_positive">比上月+%d</string>
+    <string name="compared_to_last_month_negative">比上月%d</string>
+    <string name="same_as_last_month">与上月相同</string>
+
+    <!-- Weekdays short -->
+    <string name="weekday_mon">一</string>
+    <string name="weekday_tue">二</string>
+    <string name="weekday_wed">三</string>
+    <string name="weekday_thu">四</string>
+    <string name="weekday_fri">五</string>
+    <string name="weekday_sat">六</string>
+    <string name="weekday_sun">日</string>
+
+    <!-- Navigation descriptions -->
+    <string name="import_data">导入</string>
+    <string name="export_data">导出</string>
+    <string name="previous_month">上个月</string>
+    <string name="next_month">下个月</string>
+
+    <!-- Export/Import -->
+    <string name="export_completed">导出完成</string>
+    <string name="error_saving">保存错误</string>
+    <string name="error_reading_file">读取文件错误</string>
+    <string name="invalid_file_format">文件格式无效</string>
+    <string name="import_success">已导入：%1$d个训练，%2$d个动作</string>
+    <string name="import_error">导入错误：%s</string>
+    <string name="delete_confirm">确定删除\"%s\"吗？</string>
+    <string name="max_weight_kg">最大重量（公斤）</string>
+    <string name="set_label">第%d组：</string>
+    <string name="reps_short">次</string>
+</resources>

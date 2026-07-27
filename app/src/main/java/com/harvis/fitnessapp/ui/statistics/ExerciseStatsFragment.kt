@@ -96,7 +96,7 @@ class ExerciseStatsFragment : Fragment() {
             Entry(index.toFloat(), point.maxWeight)
         }
 
-        val dataSet = LineDataSet(entries, "Max váha (kg)").apply {
+        val dataSet = LineDataSet(entries, getString(R.string.max_weight_kg)).apply {
             color = Color.parseColor("#2196F3")
             lineWidth = 2f
             circleRadius = 4f
@@ -145,7 +145,7 @@ class ExerciseStatsFragment : Fragment() {
             Entry(index.toFloat(), point.totalVolume)
         }
 
-        val dataSet = LineDataSet(entries, "Objem").apply {
+        val dataSet = LineDataSet(entries, getString(R.string.volume)).apply {
             color = Color.parseColor("#4CAF50")
             lineWidth = 2f
             circleRadius = 4f
@@ -210,10 +210,10 @@ class ExerciseStatsFragment : Fragment() {
                 textSize = 14f
 
                 val parts = mutableListOf<String>()
-                parts.add("Série ${index + 1}:")
+                parts.add(getString(R.string.set_label, index + 1))
 
                 if (exercise?.hasReps == true && set.reps > 0) {
-                    parts.add("${set.reps} opak.")
+                    parts.add("${set.reps} ${getString(R.string.reps_short)}")
                 }
                 if (exercise?.hasWeight == true && set.weight > 0) {
                     parts.add("${set.weight.toInt()} kg")

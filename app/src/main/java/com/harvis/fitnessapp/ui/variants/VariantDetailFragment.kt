@@ -125,8 +125,8 @@ class VariantDetailFragment : Fragment() {
             positiveButton.setOnClickListener {
                 val name = nameInput.text.toString().trim()
                 if (name.isEmpty()) {
-                    nameInputLayout.error = "Zadejte název cviku"
-                    Toast.makeText(requireContext(), "Zadejte název cviku", Toast.LENGTH_SHORT).show()
+                    nameInputLayout.error = getString(R.string.enter_exercise_name)
+                    Toast.makeText(requireContext(), getString(R.string.enter_exercise_name), Toast.LENGTH_SHORT).show()
                 } else {
                     nameInputLayout.error = null
                     val defaultSets = defaultSetsInput.text.toString().toIntOrNull() ?: 3
@@ -189,8 +189,8 @@ class VariantDetailFragment : Fragment() {
             positiveButton.setOnClickListener {
                 val name = nameInput.text.toString().trim()
                 if (name.isEmpty()) {
-                    nameInputLayout.error = "Zadejte název cviku"
-                    Toast.makeText(requireContext(), "Zadejte název cviku", Toast.LENGTH_SHORT).show()
+                    nameInputLayout.error = getString(R.string.enter_exercise_name)
+                    Toast.makeText(requireContext(), getString(R.string.enter_exercise_name), Toast.LENGTH_SHORT).show()
                 } else {
                     nameInputLayout.error = null
                     val defaultSets = defaultSetsInput.text.toString().toIntOrNull() ?: 3
@@ -240,8 +240,8 @@ class VariantDetailFragment : Fragment() {
 
     private fun showDeleteDialog(exercise: Exercise) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.delete)
-            .setMessage("Odebrat '${exercise.name}' z tohoto tréninku?")
+            .setTitle(R.string.remove_exercise)
+            .setMessage(getString(R.string.remove_exercise_confirm, exercise.name))
             .setPositiveButton(R.string.delete) { _, _ ->
                 viewModel.removeExerciseFromVariant(variantId, exercise.id)
             }

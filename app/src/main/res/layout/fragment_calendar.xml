@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:text="Kalendář"
+        android:text="@string/nav_calendar"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@color/on_surface"
@@ -36,7 +36,7 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_back"
-            android:contentDescription="Předchozí měsíc" />
+            android:contentDescription="@string/previous_month" />
 
         <TextView
             android:id="@+id/monthYearText"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Leden 2024"
+            android:text=""
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/on_surface" />
@@ -55,7 +55,7 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_next"
-            android:contentDescription="Další měsíc" />
+            android:contentDescription="@string/next_month" />
 
     </LinearLayout>
 
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Po"
+            android:text="@string/weekday_mon"
             android:textSize="12sp"
             android:textColor="@color/on_surface_secondary" />
         <TextView
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Út"
+            android:text="@string/weekday_tue"
             android:textSize="12sp"
             android:textColor="@color/on_surface_secondary" />
         <TextView
@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="St"
+            android:text="@string/weekday_wed"
             android:textSize="12sp"
             android:textColor="@color/on_surface_secondary" />
         <TextView
@@ -98,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Čt"
+            android:text="@string/weekday_thu"
             android:textSize="12sp"
             android:textColor="@color/on_surface_secondary" />
         <TextView
@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Pá"
+            android:text="@string/weekday_fri"
             android:textSize="12sp"
             android:textColor="@color/on_surface_secondary" />
         <TextView
@@ -114,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="So"
+            android:text="@string/weekday_sat"
             android:textSize="12sp"
             android:textColor="@color/on_surface_secondary" />
         <TextView
@@ -122,7 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Ne"
+            android:text="@string/weekday_sun"
             android:textSize="12sp"
             android:textColor="@color/on_surface_secondary" />
 
@@ -162,7 +162,7 @@
                 android:id="@+id/selectedDateText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dnes"
+                android:text="@string/today"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/on_surface" />

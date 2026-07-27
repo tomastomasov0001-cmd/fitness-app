@@ -41,9 +41,9 @@ class VariantsFragment : Fragment() {
                     requireContext().contentResolver.openOutputStream(it)?.use { output ->
                         output.write(json.toByteArray())
                     }
-                    Toast.makeText(requireContext(), "Export dokončen", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.export_completed), Toast.LENGTH_SHORT).show()
                 } catch (e: Exception) {
-                    Toast.makeText(requireContext(), "Chyba při ukládání", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.error_saving), Toast.LENGTH_SHORT).show()
                 }
             }
             viewModel.clearExportResult()
@@ -61,7 +61,7 @@ class VariantsFragment : Fragment() {
                     viewModel.importData(json)
                 }
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Chyba při čtení souboru", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.error_reading_file), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -199,7 +199,7 @@ class VariantsFragment : Fragment() {
     private fun showDeleteDialog(variantId: Long, variantName: String) {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.delete)
-            .setMessage("Opravdu smazat '$variantName'?")
+            .setMessage(getString(R.string.delete_confirm, variantName))
             .setPositiveButton(R.string.delete) { _, _ ->
                 viewModel.deleteVariantById(variantId)
             }
