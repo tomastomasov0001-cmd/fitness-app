@@ -141,4 +141,9 @@
     <string name="max_weight_kg">Max váha (kg)</string>
     <string name="set_label">Séria %d:</string>
     <string name="reps_short">opak.</string>
+
+    <!-- Language -->
+    <string name="language">Jazyk</string>
+    <string name="select_language">Vyberte jazyk</string>
+    <string name="language_system">Podľa systému</string>
 </resources>

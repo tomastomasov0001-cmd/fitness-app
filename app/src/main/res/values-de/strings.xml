@@ -141,4 +141,9 @@
     <string name="max_weight_kg">Max. Gewicht (kg)</string>
     <string name="set_label">Satz %d:</string>
     <string name="reps_short">Wdh.</string>
+
+    <!-- Language -->
+    <string name="language">Sprache</string>
+    <string name="select_language">Sprache auswählen</string>
+    <string name="language_system">Systemstandard</string>
 </resources>

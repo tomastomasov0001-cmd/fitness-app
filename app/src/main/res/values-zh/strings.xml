@@ -141,4 +141,9 @@
     <string name="max_weight_kg">最大重量（公斤）</string>
     <string name="set_label">第%d组：</string>
     <string name="reps_short">次</string>
+
+    <!-- Language -->
+    <string name="language">语言</string>
+    <string name="select_language">选择语言</string>
+    <string name="language_system">跟随系统</string>
 </resources>

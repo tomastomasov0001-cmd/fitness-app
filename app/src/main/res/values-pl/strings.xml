@@ -141,4 +141,9 @@
     <string name="max_weight_kg">Maks. ciężar (kg)</string>
     <string name="set_label">Seria %d:</string>
     <string name="reps_short">powt.</string>
+
+    <!-- Language -->
+    <string name="language">Język</string>
+    <string name="select_language">Wybierz język</string>
+    <string name="language_system">Według systemu</string>
 </resources>

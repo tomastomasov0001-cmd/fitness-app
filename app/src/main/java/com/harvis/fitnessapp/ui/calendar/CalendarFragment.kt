@@ -16,6 +16,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.harvis.fitnessapp.R
 import com.harvis.fitnessapp.data.WorkoutLog
+import com.harvis.fitnessapp.util.LanguageHelper
 import com.harvis.fitnessapp.data.WorkoutVariant
 import com.harvis.fitnessapp.databinding.FragmentCalendarBinding
 import com.kizitonwose.calendar.core.CalendarDay
@@ -42,8 +43,8 @@ class CalendarFragment : Fragment() {
     private var currentWorkoutLogs: List<WorkoutLog> = emptyList()
     private var workoutLogsForMonth: Map<LocalDate, List<WorkoutLog>> = emptyMap()
 
-    private val dateFormat = SimpleDateFormat("EEEE, d. MMMM yyyy", Locale("cs", "CZ"))
-    private val monthYearFormat = SimpleDateFormat("LLLL yyyy", Locale("cs", "CZ"))
+    private val dateFormat = SimpleDateFormat("EEEE, d. MMMM yyyy", Locale.getDefault())
+    private val monthYearFormat = SimpleDateFormat("LLLL yyyy", Locale.getDefault())
 
     companion object {
         val VARIANT_COLORS = listOf(
@@ -185,6 +186,38 @@ class CalendarFragment : Fragment() {
         binding.assignWorkoutButton.setOnClickListener {
             showAssignWorkoutDialog()
         }
+
+        binding.languageButton.setOnClickListener {
+            showLanguageDialog()
+        }
+    }
+
+    private fun showLanguageDialog() {
+        val languages = LanguageHelper.availableLanguages
+        val currentCode = LanguageHelper.getCurrentLanguageCode(requireContext())
+
+        val displayNames = languages.map { lang ->
+            if (lang.code == LanguageHelper.SYSTEM_DEFAULT) {
+                getString(R.string.language_system)
+            } else {
+                "${lang.nativeName} (${lang.displayName})"
+            }
+        }.toTypedArray()
+
+        val currentIndex = languages.indexOfFirst { it.code == currentCode }.coerceAtLeast(0)
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.select_language)
+            .setSingleChoiceItems(displayNames, currentIndex) { dialog, which ->
+                val selectedLanguage = languages[which]
+                LanguageHelper.saveLanguage(requireContext(), selectedLanguage.code)
+                LanguageHelper.applyLanguage(requireContext(), selectedLanguage.code)
+                dialog.dismiss()
+                // Recreate activity to apply language change
+                requireActivity().recreate()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     private fun observeData() {

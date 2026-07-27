@@ -141,4 +141,9 @@
     <string name="max_weight_kg">Poids max (kg)</string>
     <string name="set_label">Série %d :</string>
     <string name="reps_short">reps</string>
+
+    <!-- Language -->
+    <string name="language">Langue</string>
+    <string name="select_language">Sélectionner la langue</string>
+    <string name="language_system">Par défaut du système</string>
 </resources>
