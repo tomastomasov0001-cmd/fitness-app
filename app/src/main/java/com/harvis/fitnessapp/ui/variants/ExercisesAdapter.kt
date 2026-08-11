@@ -15,6 +15,7 @@ class ExercisesAdapter(
 
     private val items = mutableListOf<Exercise>()
     private var isDragging = false
+    private var lastOrderIds: List<Long> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseViewHolder {
         val binding = ItemExerciseBinding.inflate(
@@ -32,20 +33,24 @@ class ExercisesAdapter(
     fun submitList(list: List<Exercise>?) {
         if (isDragging) return // Ignore updates while dragging
 
-        // Check if list is the same (same items in same order)
         val newList = list ?: emptyList()
-        if (items.size == newList.size && items.map { it.id } == newList.map { it.id }) {
-            // Same order, just update content if needed
-            var hasChanges = false
-            for (i in items.indices) {
-                if (items[i] != newList[i]) {
-                    items[i] = newList[i]
-                    hasChanges = true
-                }
-            }
-            if (hasChanges) {
-                notifyDataSetChanged()
-            }
+        val newIds = newList.map { it.id }
+
+        // If this matches our last drag order, just accept silently
+        if (newIds == lastOrderIds) {
+            lastOrderIds = emptyList()
+            // Update items without notifying (data is same, just from DB now)
+            items.clear()
+            items.addAll(newList)
+            return
+        }
+
+        // Check if list is the same as current
+        val currentIds = items.map { it.id }
+        if (currentIds == newIds) {
+            // Same order, no need to refresh
+            items.clear()
+            items.addAll(newList)
             return
         }
 
@@ -69,6 +74,7 @@ class ExercisesAdapter(
     }
 
     fun onMoveFinished() {
+        lastOrderIds = items.map { it.id }
         onOrderChanged?.invoke(items.toList())
         isDragging = false
     }
