@@ -1,4 +1,4 @@
-package com.harvis.fitnessapp.ui.variants
+package com.harvis.fitnessapp.ui.exercises
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,185 +7,75 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.harvis.fitnessapp.R
 import com.harvis.fitnessapp.data.Exercise
-import com.harvis.fitnessapp.data.WorkoutVariant
-import com.harvis.fitnessapp.util.PremiumDialogHelper
-import com.harvis.fitnessapp.util.PremiumManager
-import com.harvis.fitnessapp.databinding.FragmentVariantDetailBinding
+import com.harvis.fitnessapp.databinding.FragmentExercisesBinding
+import kotlinx.coroutines.launch
 
-class VariantDetailFragment : Fragment() {
+class ExercisesFragment : Fragment() {
 
-    private var _binding: FragmentVariantDetailBinding? = null
+    private var _binding: FragmentExercisesBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: VariantsViewModel
-    private lateinit var adapter: ExercisesAdapter
-    private var variantId: Long = 0
-    private var currentVariant: WorkoutVariant? = null
-    private var currentExerciseCount = 0
-    private var currentExerciseIds: Set<Long> = emptySet()
-    private var allExercisesList: List<Exercise> = emptyList()
+    private lateinit var viewModel: ExercisesViewModel
+    private lateinit var adapter: AllExercisesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentVariantDetailBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this)[VariantsViewModel::class.java]
-
-        arguments?.let {
-            variantId = it.getLong("variantId", 0)
-        }
-
+        _binding = FragmentExercisesBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this)[ExercisesViewModel::class.java]
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupToolbar()
         setupRecyclerView()
         observeData()
         setupFab()
     }
 
-    private fun setupToolbar() {
-        binding.backButton.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        binding.editVariantButton.setOnClickListener {
-            currentVariant?.let { showEditVariantDialog(it) }
-        }
-    }
-
     private fun setupRecyclerView() {
-        adapter = ExercisesAdapter(
+        adapter = AllExercisesAdapter(
             onEditClick = { exercise ->
                 showEditExerciseDialog(exercise)
             },
-            onDeleteClick = { exercise ->
-                showDeleteDialog(exercise)
-            },
-            onOrderChanged = { exercises ->
-                viewModel.updateExerciseOrder(variantId, exercises)
+            onDeleteClick = { exercise, variantCount ->
+                showDeleteDialog(exercise, variantCount)
             }
         )
         binding.exercisesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.exercisesRecyclerView.adapter = adapter
-
-        // Setup drag & drop
-        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
-        ) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                val fromPos = viewHolder.absoluteAdapterPosition
-                val toPos = target.absoluteAdapterPosition
-                adapter.moveItem(fromPos, toPos)
-                return true
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                // Not used
-            }
-
-            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
-                super.clearView(recyclerView, viewHolder)
-                adapter.onMoveFinished()
-            }
-        })
-        itemTouchHelper.attachToRecyclerView(binding.exercisesRecyclerView)
     }
 
     private fun observeData() {
-        viewModel.getVariantWithExercises(variantId).observe(viewLifecycleOwner) { data ->
-            data?.let {
-                currentVariant = it.variant
-                binding.variantTitle.text = it.variant.name
-                binding.emptyView.visibility = if (it.exercises.isEmpty()) View.VISIBLE else View.GONE
-            }
-        }
-
-        viewModel.getExercisesForVariant(variantId).observe(viewLifecycleOwner) { exercises ->
-            currentExerciseCount = exercises.size
-            currentExerciseIds = exercises.map { it.id }.toSet()
-            adapter.submitList(exercises)
-            binding.emptyView.visibility = if (exercises.isEmpty()) View.VISIBLE else View.GONE
-        }
-
         viewModel.allExercises.observe(viewLifecycleOwner) { exercises ->
-            allExercisesList = exercises
+            binding.emptyView.visibility = if (exercises.isEmpty()) View.VISIBLE else View.GONE
+
+            // Load variant counts for each exercise
+            lifecycleScope.launch {
+                val exercisesWithCount = exercises.map { exercise ->
+                    val count = viewModel.getVariantCountForExercise(exercise.id)
+                    ExerciseWithCount(exercise, count)
+                }
+                adapter.submitList(exercisesWithCount)
+            }
         }
     }
 
     private fun setupFab() {
         binding.fabAddExercise.setOnClickListener {
-            if (PremiumManager.canAddExercise(requireContext(), currentExerciseCount)) {
-                showAddExerciseOptionsDialog()
-            } else {
-                PremiumDialogHelper.showExerciseLimitDialog(requireActivity())
-            }
+            showAddExerciseDialog()
         }
-    }
-
-    private fun showAddExerciseOptionsDialog() {
-        val options = arrayOf(
-            getString(R.string.select_existing_exercise),
-            getString(R.string.create_new_exercise)
-        )
-
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.add_exercise_title)
-            .setItems(options) { _, which ->
-                when (which) {
-                    0 -> showSelectExerciseDialog()
-                    1 -> showAddExerciseDialog()
-                }
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
-    }
-
-    private fun showSelectExerciseDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_select_exercise, null)
-        val recyclerView = dialogView.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.exercisesRecyclerView)
-        val emptyView = dialogView.findViewById<android.widget.TextView>(R.id.emptyView)
-
-        val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.select_exercise)
-            .setView(dialogView)
-            .setNegativeButton(R.string.cancel, null)
-            .create()
-
-        val selectAdapter = ExerciseSelectAdapter { exercise ->
-            viewModel.addExerciseToVariant(variantId, exercise.id, currentExerciseCount)
-            dialog.dismiss()
-        }
-
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = selectAdapter
-
-        // Get current exercises and filter
-        val availableExercises = allExercisesList.filter { it.id !in currentExerciseIds }
-        selectAdapter.submitList(availableExercises)
-        emptyView.visibility = if (availableExercises.isEmpty()) View.VISIBLE else View.GONE
-        recyclerView.visibility = if (availableExercises.isEmpty()) View.GONE else View.VISIBLE
-
-        dialog.show()
     }
 
     private fun showAddExerciseDialog() {
@@ -231,7 +121,7 @@ class VariantDetailFragment : Fragment() {
                         hasTime = hasTimeCheckbox.isChecked,
                         defaultSets = defaultSets
                     )
-                    viewModel.insertExerciseAndAddToVariant(exercise, variantId)
+                    viewModel.insertExercise(exercise)
                     dialog.dismiss()
                 }
             }
@@ -304,38 +194,12 @@ class VariantDetailFragment : Fragment() {
         dialog.show()
     }
 
-    private fun showEditVariantDialog(variant: WorkoutVariant) {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_add_variant, null)
-        val nameInput = dialogView.findViewById<TextInputEditText>(R.id.variantNameInput)
-        val descInput = dialogView.findViewById<TextInputEditText>(R.id.variantDescInput)
-
-        // Pre-fill current values
-        nameInput.setText(variant.name)
-        descInput.setText(variant.description)
-
+    private fun showDeleteDialog(exercise: Exercise, variantCount: Int) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.edit)
-            .setView(dialogView)
-            .setPositiveButton(R.string.save) { _, _ ->
-                val name = nameInput.text.toString().trim()
-                if (name.isNotEmpty()) {
-                    val updatedVariant = variant.copy(
-                        name = name,
-                        description = descInput.text.toString().trim()
-                    )
-                    viewModel.updateVariant(updatedVariant)
-                }
-            }
-            .setNegativeButton(R.string.cancel, null)
-            .show()
-    }
-
-    private fun showDeleteDialog(exercise: Exercise) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.remove_exercise)
-            .setMessage(getString(R.string.remove_exercise_confirm, exercise.name))
+            .setTitle(R.string.delete)
+            .setMessage(getString(R.string.delete_exercise_confirm, exercise.name))
             .setPositiveButton(R.string.delete) { _, _ ->
-                viewModel.removeExerciseFromVariant(variantId, exercise.id)
+                viewModel.deleteExercise(exercise)
             }
             .setNegativeButton(R.string.cancel, null)
             .show()

@@ -96,6 +96,14 @@ class VariantsViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun updateExerciseOrder(variantId: Long, exercises: List<Exercise>) {
+        viewModelScope.launch {
+            exercises.forEachIndexed { index, exercise ->
+                dao.updateExerciseOrder(variantId, exercise.id, index)
+            }
+        }
+    }
+
     fun insertExerciseAndAddToVariant(exercise: Exercise, variantId: Long) {
         viewModelScope.launch {
             val exerciseId = dao.insertExercise(exercise)

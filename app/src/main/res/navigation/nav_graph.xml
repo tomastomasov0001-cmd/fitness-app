@@ -20,6 +20,10 @@
         <action
             android:id="@+id/action_variants_to_variantDetail"
             app:destination="@id/variantDetailFragment" />
+
+        <action
+            android:id="@+id/action_variants_to_exercises"
+            app:destination="@id/exercisesFragment" />
     </fragment>
 
     <fragment
@@ -32,6 +36,12 @@
             android:name="variantId"
             app:argType="long" />
     </fragment>
+
+    <fragment
+        android:id="@+id/exercisesFragment"
+        android:name="com.harvis.fitnessapp.ui.exercises.ExercisesFragment"
+        android:label="@string/nav_exercises"
+        tools:layout="@layout/fragment_exercises" />
 
     <fragment
         android:id="@+id/workoutFragment"

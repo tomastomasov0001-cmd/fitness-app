@@ -11,7 +11,7 @@ interface FitnessDao {
     fun getAllVariants(): LiveData<List<WorkoutVariant>>
 
     @Query("""
-        SELECT v.id, v.name, v.description,
+        SELECT v.id, v.name, v.description, v.createdAt,
                (SELECT COUNT(*) FROM variant_exercises ve WHERE ve.variantId = v.id) as exerciseCount
         FROM workout_variants v
         ORDER BY v.name ASC
@@ -36,6 +36,9 @@ interface FitnessDao {
     // === CVIKY ===
     @Query("SELECT * FROM exercises ORDER BY name ASC")
     fun getAllExercises(): LiveData<List<Exercise>>
+
+    @Query("SELECT COUNT(*) FROM variant_exercises WHERE exerciseId = :exerciseId")
+    suspend fun getVariantCountForExercise(exerciseId: Long): Int
 
     @Query("SELECT * FROM exercises WHERE id = :id")
     suspend fun getExerciseById(id: Long): Exercise?
@@ -63,6 +66,9 @@ interface FitnessDao {
 
     @Query("DELETE FROM variant_exercises WHERE variantId = :variantId AND exerciseId = :exerciseId")
     suspend fun removeExerciseFromVariant(variantId: Long, exerciseId: Long)
+
+    @Query("UPDATE variant_exercises SET orderIndex = :newOrder WHERE variantId = :variantId AND exerciseId = :exerciseId")
+    suspend fun updateExerciseOrder(variantId: Long, exerciseId: Long, newOrder: Int)
 
     @Transaction
     @Query("SELECT * FROM workout_variants WHERE id = :variantId")

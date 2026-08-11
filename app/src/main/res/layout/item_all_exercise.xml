@@ -16,15 +16,6 @@
         android:gravity="center_vertical"
         android:padding="12dp">
 
-        <ImageView
-            android:id="@+id/dragHandle"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="12dp"
-            android:src="@drawable/ic_drag_handle"
-            app:tint="@color/on_surface_secondary"
-            android:contentDescription="@string/drag_to_reorder" />
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -49,6 +40,15 @@
                 android:textSize="14sp"
                 android:textColor="@color/on_surface_secondary"
                 android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/usageCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/not_used"
+                android:textSize="12sp"
+                android:textColor="@color/on_surface_secondary" />
 
             <LinearLayout
                 android:id="@+id/tagsContainer"
@@ -118,7 +118,8 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_edit"
-            android:contentDescription="@string/edit" />
+            android:contentDescription="@string/edit"
+            app:tint="@color/on_surface" />
 
         <ImageButton
             android:id="@+id/deleteButton"
@@ -126,7 +127,8 @@
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@drawable/ic_delete"
-            android:contentDescription="@string/delete" />
+            android:contentDescription="@string/delete"
+            app:tint="@color/on_surface" />
 
     </LinearLayout>
 

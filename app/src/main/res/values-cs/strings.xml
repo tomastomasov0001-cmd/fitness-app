@@ -5,6 +5,7 @@
     <!-- Navigation -->
     <string name="nav_calendar">Kalendář</string>
     <string name="nav_variants">Tréninky</string>
+    <string name="nav_exercises">Cviky</string>
     <string name="nav_workout">Cvičit</string>
     <string name="nav_history">Historie</string>
     <string name="nav_statistics">Statistiky</string>
@@ -32,6 +33,15 @@
     <string name="exercise_count_many">%d cviků</string>
 
     <!-- Exercises -->
+    <string name="exercises_title">Všechny cviky</string>
+    <string name="create_new_exercise">Vytvořit nový</string>
+    <string name="select_existing_exercise">Vybrat existující</string>
+    <string name="add_exercise_title">Přidat cvik</string>
+    <string name="used_in_workouts">Použito v %d trénincích</string>
+    <string name="used_in_one_workout">Použito v 1 tréninku</string>
+    <string name="not_used">Nepoužito</string>
+    <string name="delete_exercise_confirm">Smazat cvik \'%s\'? Bude odebrán ze všech tréninků.</string>
+    <string name="drag_to_reorder">Přetáhněte pro změnu pořadí</string>
     <string name="new_exercise">Nový cvik</string>
     <string name="exercise_name">Název cviku</string>
     <string name="exercise_description">Popis (volitelné)</string>
@@ -146,4 +156,31 @@
     <string name="language">Jazyk</string>
     <string name="select_language">Vyberte jazyk</string>
     <string name="language_system">Podle systému</string>
+
+    <!-- Premium -->
+    <string name="premium_title">Premium verze</string>
+    <string name="premium_description">Odemkněte plný potenciál aplikace!</string>
+    <string name="premium_required">Vyžaduje Premium</string>
+    <string name="upgrade">Upgradovat</string>
+    <string name="variant_limit_title">Limit tréninků dosažen</string>
+    <string name="variant_limit_message">Free verze umožňuje pouze 1 trénink. Upgradujte na Premium pro neomezený počet.</string>
+    <string name="exercise_limit_title">Limit cviků dosažen</string>
+    <string name="exercise_limit_message">Free verze umožňuje max 2 cviky na trénink. Upgradujte na Premium pro neomezený počet.</string>
+    <string name="history_premium_required">Historie tréninků je dostupná pouze v Premium verzi.</string>
+    <string name="statistics_premium_required">Statistiky jsou dostupné pouze v Premium verzi.</string>
+    <string name="have_promo_code">Mám promo kód</string>
+    <string name="enter_promo_code">Zadejte promo kód</string>
+    <string name="promo_code_hint">Promo kód</string>
+    <string name="promo_code_success">Premium aktivováno na 7 dní!</string>
+    <string name="promo_code_success_permanent">Premium trvale aktivováno! Děkujeme za testování!</string>
+    <string name="promo_code_invalid">Neplatný kód</string>
+    <string name="promo_code_already_used">Tento kód již byl použit</string>
+    <string name="promo_code_already_active">Již máte aktivní zkušební období</string>
+    <string name="activate">Aktivovat</string>
+
+    <!-- Premium status labels -->
+    <string name="premium_status_free">ZDARMA</string>
+    <string name="premium_status_trial">ZKOUŠKA (%d dní)</string>
+    <string name="premium_status_trial_one">ZKOUŠKA (1 den)</string>
+    <string name="premium_status_premium">PREMIUM</string>
 </resources>

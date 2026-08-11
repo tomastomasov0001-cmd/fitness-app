@@ -17,6 +17,8 @@ import com.google.android.material.textfield.TextInputEditText
 import com.harvis.fitnessapp.R
 import com.harvis.fitnessapp.data.VariantWithCount
 import com.harvis.fitnessapp.data.WorkoutVariant
+import com.harvis.fitnessapp.util.PremiumDialogHelper
+import com.harvis.fitnessapp.util.PremiumManager
 import com.harvis.fitnessapp.databinding.FragmentVariantsBinding
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -29,6 +31,12 @@ class VariantsFragment : Fragment() {
 
     private lateinit var viewModel: VariantsViewModel
     private lateinit var adapter: VariantsAdapter
+    private var currentVariantCount = 0
+
+    // Debug mode
+    private var debugTapCount = 0
+    private var lastDebugTapTime = 0L
+    private val debugPassword = "1196"  // Tajné heslo pro debug menu
 
     // Launcher pro ulozeni exportu
     private val exportLauncher = registerForActivityResult(
@@ -82,8 +90,161 @@ class VariantsFragment : Fragment() {
         setupRecyclerView()
         setupFab()
         setupExportImport()
+        setupDebugMode()
         observeVariants()
         observeExportImport()
+    }
+
+    private fun setupDebugMode() {
+        // 7x tap na nadpis otevře debug menu (s heslem)
+        binding.title.setOnClickListener {
+            val now = System.currentTimeMillis()
+            if (now - lastDebugTapTime > 2000) {
+                debugTapCount = 0
+            }
+            lastDebugTapTime = now
+            debugTapCount++
+
+            if (debugTapCount >= 7) {
+                debugTapCount = 0
+                showDebugPasswordDialog()
+            }
+        }
+
+        // Dlouhé podržení také otevře debug menu (s heslem)
+        binding.title.setOnLongClickListener {
+            showDebugPasswordDialog()
+            true
+        }
+    }
+
+    private fun showDebugPasswordDialog() {
+        val input = android.widget.EditText(requireContext()).apply {
+            hint = "Heslo"
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER or
+                        android.text.InputType.TYPE_NUMBER_VARIATION_PASSWORD
+        }
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Developer Access")
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                if (input.text.toString() == debugPassword) {
+                    showDebugMenu()
+                } else {
+                    Toast.makeText(requireContext(), "Špatné heslo", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Zrušit", null)
+            .show()
+    }
+
+    private fun showDebugMenu() {
+        val context = requireContext()
+        val premiumType = PremiumManager.getPremiumType(context)
+        val remainingDays = PremiumManager.getPromoRemainingDays(context)
+
+        val statusText = when (premiumType) {
+            PremiumManager.PremiumType.PURCHASED -> "PREMIUM (zakoupeno)"
+            PremiumManager.PremiumType.PROMO -> "TRIAL ($remainingDays dní zbývá)"
+            PremiumManager.PremiumType.NONE -> "FREE"
+        }
+
+        val options = arrayOf(
+            "Přepnout Premium (aktuálně: $statusText)",
+            "Resetovat promo kódy",
+            "Zadat promo kód",
+            "Generovat VIP kód pro přítele",
+            "Zobrazit info"
+        )
+
+        MaterialAlertDialogBuilder(context)
+            .setTitle("Debug Menu")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> {
+                        val newState = PremiumManager.debugTogglePremium(context)
+                        val msg = if (newState) "Premium ZAPNUTO" else "Premium VYPNUTO"
+                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                    }
+                    1 -> {
+                        PremiumManager.debugResetAllPromoCodes(context)
+                        Toast.makeText(context, "Promo kódy resetovány", Toast.LENGTH_SHORT).show()
+                    }
+                    2 -> {
+                        PremiumDialogHelper.showPromoCodeDialog(requireActivity())
+                    }
+                    3 -> {
+                        showGenerateVipCodeDialog()
+                    }
+                    4 -> {
+                        showDebugInfo()
+                    }
+                }
+            }
+            .setNegativeButton("Zavřít", null)
+            .show()
+    }
+
+    private fun showGenerateVipCodeDialog() {
+        val codes = mutableListOf<String>()
+        repeat(5) {
+            codes.add(PremiumManager.generateVipCode())
+        }
+
+        val message = buildString {
+            appendLine("Vygenerované VIP kódy (trvalý premium):")
+            appendLine()
+            codes.forEach { code ->
+                appendLine("  $code")
+            }
+            appendLine()
+            appendLine("Každý kód lze použít pouze JEDNOU.")
+            appendLine("Zkopíruj a pošli příteli.")
+        }
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("VIP kódy")
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+            .setNeutralButton("Kopírovat první") { _, _ ->
+                val clipboard = requireContext().getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                val clip = android.content.ClipData.newPlainText("VIP kód", codes.first())
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(requireContext(), "Zkopírováno: ${codes.first()}", Toast.LENGTH_SHORT).show()
+            }
+            .show()
+    }
+
+    private fun showDebugInfo() {
+        val context = requireContext()
+        val premiumType = PremiumManager.getPremiumType(context)
+        val remainingDays = PremiumManager.getPromoRemainingDays(context)
+        val activeCode = PremiumManager.getActivePromoCode(context)
+
+        val info = buildString {
+            appendLine("=== Premium Info ===")
+            appendLine("Typ: $premiumType")
+            appendLine("Zakoupeno: ${PremiumManager.isPremiumPurchased(context)}")
+            appendLine("Promo aktivní: ${PremiumManager.isPromoActive(context)}")
+            if (remainingDays >= 0) {
+                appendLine("Zbývá dní: $remainingDays")
+            }
+            if (activeCode != null) {
+                appendLine("Aktivní kód: $activeCode")
+            }
+            appendLine()
+            appendLine("=== Limity ===")
+            appendLine("Max variant (free): ${PremiumManager.FREE_MAX_VARIANTS}")
+            appendLine("Max cviků (free): ${PremiumManager.FREE_MAX_EXERCISES}")
+            appendLine("Aktuální variant: $currentVariantCount")
+        }
+
+        MaterialAlertDialogBuilder(context)
+            .setTitle("Debug Info")
+            .setMessage(info)
+            .setPositiveButton("OK", null)
+            .show()
     }
 
     private fun setupRecyclerView() {
@@ -105,11 +266,23 @@ class VariantsFragment : Fragment() {
 
     private fun setupFab() {
         binding.fabAddVariant.setOnClickListener {
-            showAddVariantDialog()
+            if (PremiumManager.canAddVariant(requireContext(), currentVariantCount)) {
+                showAddVariantDialog()
+            } else {
+                PremiumDialogHelper.showVariantLimitDialog(requireActivity())
+            }
         }
     }
 
     private fun setupExportImport() {
+        binding.exercisesButton.setOnClickListener {
+            findNavController().navigate(R.id.action_variants_to_exercises)
+        }
+
+        binding.exercisesCard.setOnClickListener {
+            findNavController().navigate(R.id.action_variants_to_exercises)
+        }
+
         binding.exportButton.setOnClickListener {
             viewModel.exportData()
         }
@@ -142,8 +315,18 @@ class VariantsFragment : Fragment() {
 
     private fun observeVariants() {
         viewModel.allVariantsWithCount.observe(viewLifecycleOwner) { variants ->
+            currentVariantCount = variants.size
             adapter.submitList(variants)
             binding.emptyView.visibility = if (variants.isEmpty()) View.VISIBLE else View.GONE
+        }
+
+        viewModel.allExercises.observe(viewLifecycleOwner) { exercises ->
+            val count = exercises.size
+            binding.exercisesCount.text = when (count) {
+                0 -> getString(R.string.exercise_count_zero)
+                1 -> getString(R.string.exercise_count_one)
+                else -> getString(R.string.exercise_count_many, count)
+            }
         }
     }
 
@@ -184,10 +367,12 @@ class VariantsFragment : Fragment() {
             .setPositiveButton(R.string.save) { _, _ ->
                 val name = nameInput.text.toString().trim()
                 if (name.isNotEmpty()) {
+                    // Zachovat puvodni createdAt timestamp
                     val updatedVariant = WorkoutVariant(
                         id = variant.id,
                         name = name,
-                        description = descInput.text.toString().trim()
+                        description = descInput.text.toString().trim(),
+                        createdAt = variant.createdAt
                     )
                     viewModel.updateVariant(updatedVariant)
                 }
