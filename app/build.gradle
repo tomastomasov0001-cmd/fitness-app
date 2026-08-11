@@ -4,9 +4,27 @@ plugins {
     id 'org.jetbrains.kotlin.kapt'
 }
 
+// Load keystore properties
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace 'com.harvis.fitnessapp'
     compileSdk 34
+
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+    }
 
     defaultConfig {
         applicationId "com.harvis.fitnessapp"
@@ -20,7 +38,9 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -71,6 +91,10 @@ dependencies {
 
     // Gson pro JSON export/import
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    // Google Play Billing
+    implementation 'com.android.billingclient:billing:6.1.0'
+    implementation 'com.android.billingclient:billing-ktx:6.1.0'
 
     // MPAndroidChart pro grafy a statistiky
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'

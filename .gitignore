@@ -90,3 +90,8 @@ signing/
 
 # Windows
 Thumbs.db
+
+# Keystore
+*.keystore
+*.jks
+keystore.properties

@@ -10,3 +10,17 @@
 # Glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep class * extends com.bumptech.glide.module.AppGlideModule
+
+# Gson
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.google.gson.** { *; }
+-keep class com.harvis.fitnessapp.data.** { *; }
+
+# MPAndroidChart
+-keep class com.github.mikephil.charting.** { *; }
+
+# Keep data classes for serialization
+-keepclassmembers class * {
+    @com.google.gson.annotations.SerializedName <fields>;
+}
