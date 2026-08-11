@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Pozadí - gradient -->
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00BFA5"/>
+      <stop offset="100%" style="stop-color:#00897B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Kulaté pozadí -->
+  <circle cx="256" cy="256" r="256" fill="url(#bg2)"/>
+
+  <!-- Postava cvičící - stylizovaná -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Hlava -->
+    <circle cx="256" cy="120" r="40" fill="#FFFFFF"/>
+
+    <!-- Tělo -->
+    <line x1="256" y1="160" x2="256" y2="280"/>
+
+    <!-- Ruce nahoře (jako Y) -->
+    <line x1="256" y1="200" x2="170" y2="130"/>
+    <line x1="256" y1="200" x2="342" y2="130"/>
+
+    <!-- Nohy -->
+    <line x1="256" y1="280" x2="180" y2="400"/>
+    <line x1="256" y1="280" x2="332" y2="400"/>
+  </g>
+</svg>

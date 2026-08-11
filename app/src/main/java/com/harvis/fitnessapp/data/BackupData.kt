@@ -73,3 +73,54 @@ object BackupHelper {
         )
     }
 }
+
+/**
+ * Trida pro export/import pouze cviku
+ */
+data class ExercisesBackupData(
+    val version: Int = 1,
+    val exportDate: Long = System.currentTimeMillis(),
+    val exercises: List<ExerciseBackup>
+)
+
+object ExercisesBackupHelper {
+    private val gson: Gson = GsonBuilder().setPrettyPrinting().create()
+
+    fun toJson(data: ExercisesBackupData): String {
+        return gson.toJson(data)
+    }
+
+    fun fromJson(json: String): ExercisesBackupData? {
+        return try {
+            gson.fromJson(json, ExercisesBackupData::class.java)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    fun createBackup(exercises: List<Exercise>): ExercisesBackupData {
+        return ExercisesBackupData(
+            exercises = exercises.map {
+                ExerciseBackup(
+                    it.id, it.name, it.description,
+                    it.hasSets, it.hasReps, it.hasWeight, it.hasTime, it.defaultSets
+                )
+            }
+        )
+    }
+
+    fun toExercises(backup: ExercisesBackupData): List<Exercise> {
+        return backup.exercises.map {
+            Exercise(
+                id = 0, // nové ID při importu
+                name = it.name,
+                description = it.description,
+                hasSets = it.hasSets,
+                hasReps = it.hasReps,
+                hasWeight = it.hasWeight,
+                hasTime = it.hasTime,
+                defaultSets = it.defaultSets
+            )
+        }
+    }
+}

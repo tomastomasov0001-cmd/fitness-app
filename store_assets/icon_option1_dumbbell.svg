@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Pozadí - gradient -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7C4DFF"/>
+      <stop offset="100%" style="stop-color:#6200EE"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Kulaté pozadí -->
+  <circle cx="256" cy="256" r="256" fill="url(#bg)"/>
+
+  <!-- Činka - stylizovaná -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Tyč -->
+    <line x1="120" y1="256" x2="392" y2="256"/>
+
+    <!-- Levé závaží - vnější -->
+    <rect x="80" y="180" width="40" height="152" rx="8" fill="#FFFFFF"/>
+    <!-- Levé závaží - vnitřní -->
+    <rect x="120" y="200" width="30" height="112" rx="6" fill="#FFFFFF"/>
+
+    <!-- Pravé závaží - vnější -->
+    <rect x="392" y="180" width="40" height="152" rx="8" fill="#FFFFFF"/>
+    <!-- Pravé závaží - vnitřní -->
+    <rect x="362" y="200" width="30" height="112" rx="6" fill="#FFFFFF"/>
+  </g>
+</svg>

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -15,8 +16,11 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.harvis.fitnessapp.R
 import com.harvis.fitnessapp.data.Exercise
+import com.harvis.fitnessapp.data.ExercisesBackupHelper
 import com.harvis.fitnessapp.databinding.FragmentExercisesBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ExercisesFragment : Fragment() {
 
@@ -25,6 +29,22 @@ class ExercisesFragment : Fragment() {
 
     private lateinit var viewModel: ExercisesViewModel
     private lateinit var adapter: AllExercisesAdapter
+
+    private var currentExercises: List<Exercise> = emptyList()
+
+    // Export launcher
+    private val exportLauncher = registerForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        uri?.let { exportToFile(it) }
+    }
+
+    // Import launcher
+    private val importLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let { importFromFile(it) }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,6 +62,91 @@ class ExercisesFragment : Fragment() {
         setupRecyclerView()
         observeData()
         setupFab()
+        setupExportImport()
+    }
+
+    private fun setupExportImport() {
+        binding.btnExport.setOnClickListener {
+            if (currentExercises.isEmpty()) {
+                Toast.makeText(requireContext(), R.string.no_exercises_to_export, Toast.LENGTH_SHORT).show()
+            } else {
+                exportLauncher.launch("exercises_backup.json")
+            }
+        }
+
+        binding.btnImport.setOnClickListener {
+            importLauncher.launch("application/json")
+        }
+    }
+
+    private fun exportToFile(uri: android.net.Uri) {
+        lifecycleScope.launch {
+            try {
+                val backup = ExercisesBackupHelper.createBackup(currentExercises)
+                val json = ExercisesBackupHelper.toJson(backup)
+
+                withContext(Dispatchers.IO) {
+                    requireContext().contentResolver.openOutputStream(uri)?.use { stream ->
+                        stream.write(json.toByteArray())
+                    }
+                }
+
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.exercises_export_success, currentExercises.size),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), R.string.error_saving, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun importFromFile(uri: android.net.Uri) {
+        lifecycleScope.launch {
+            try {
+                val json = withContext(Dispatchers.IO) {
+                    requireContext().contentResolver.openInputStream(uri)?.use { stream ->
+                        stream.bufferedReader().readText()
+                    }
+                }
+
+                if (json == null) {
+                    Toast.makeText(requireContext(), R.string.error_reading_file, Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                val backup = ExercisesBackupHelper.fromJson(json)
+                if (backup == null) {
+                    Toast.makeText(requireContext(), R.string.invalid_file_format, Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                val exercises = ExercisesBackupHelper.toExercises(backup)
+                val existingNames = currentExercises.map { it.name.lowercase() }.toSet()
+                var importedCount = 0
+                var skippedCount = 0
+
+                for (exercise in exercises) {
+                    if (exercise.name.lowercase() !in existingNames) {
+                        viewModel.insertExercise(exercise)
+                        importedCount++
+                    } else {
+                        skippedCount++
+                    }
+                }
+
+                val message = if (skippedCount > 0) {
+                    getString(R.string.exercises_import_with_skipped, importedCount, skippedCount)
+                } else {
+                    getString(R.string.exercises_import_success, importedCount)
+                }
+
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), R.string.error_reading_file, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun setupRecyclerView() {
@@ -59,6 +164,7 @@ class ExercisesFragment : Fragment() {
 
     private fun observeData() {
         viewModel.allExercises.observe(viewLifecycleOwner) { exercises ->
+            currentExercises = exercises
             binding.emptyView.visibility = if (exercises.isEmpty()) View.VISIBLE else View.GONE
 
             // Load variant counts for each exercise

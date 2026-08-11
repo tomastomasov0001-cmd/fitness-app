@@ -1,9 +1,18 @@
 # Store Assets - Grafika pro Google Play
 
+## Stav přípravy
+
+- [x] Ikona SVG vytvořena: `icon_option1_dumbbell.svg` (vybraná varianta)
+- [ ] Ikona PNG 512x512: `icon_512.png` (nutno převést)
+- [ ] Feature Graphic: `feature_graphic.png`
+- [ ] Screenshoty (min 2)
+- [x] Privacy Policy: `privacy_policy.html`
+
 ## Potřebné soubory
 
 ### 1. Ikona (povinné)
-- **Název:** `icon_512.png`
+- **Zdrojový soubor:** `icon_option1_dumbbell.svg` ✓
+- **Cílový soubor:** `icon_512.png`
 - **Rozměry:** 512 x 512 px
 - **Formát:** PNG (32-bit, bez průhlednosti)
 
@@ -17,19 +26,23 @@
 - **Rozměry:** 16:9 nebo 9:16 (např. 1080x1920)
 - **Formát:** PNG nebo JPG
 
-## Jak vytvořit ikonu 512x512
+## Jak převést ikonu SVG na PNG 512x512
 
-### Možnost 1: Android Studio
-1. Otevři Android Studio
-2. Pravý klik na `res` → New → Image Asset
-3. Foreground: vyber `ic_launcher_foreground.xml`
-4. Background: vyber `ic_launcher_background.xml`
-5. Export jako PNG 512x512
+### Možnost 1: Online konvertor (nejrychlejší)
+1. Otevři https://svgtopng.com nebo https://cloudconvert.com/svg-to-png
+2. Nahraj `icon_option1_dumbbell.svg`
+3. Nastav rozměry 512x512
+4. Stáhni a ulož jako `icon_512.png`
 
-### Možnost 2: Online nástroje
-- https://www.canva.com (zdarma, šablony pro app ikony)
-- https://www.figma.com (zdarma, profesionální)
-- https://icon.kitchen (speciálně pro Android ikony)
+### Možnost 2: Android Studio
+1. File → New → Image Asset
+2. Asset Type: Launcher Icons
+3. Source Asset → Path: vyber `icon_option1_dumbbell.svg`
+4. Finish
+
+### Možnost 3: Figma/Canva
+1. Importuj SVG
+2. Exportuj jako PNG 512x512
 
 ## Jak vytvořit Feature Graphic
 

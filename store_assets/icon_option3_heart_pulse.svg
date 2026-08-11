@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Pozadí - gradient červený -->
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF5252"/>
+      <stop offset="100%" style="stop-color:#D32F2F"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Kulaté pozadí -->
+  <circle cx="256" cy="256" r="256" fill="url(#bg3)"/>
+
+  <!-- Srdce -->
+  <path fill="#FFFFFF" d="M256 420
+    C 180 350, 90 280, 90 190
+    C 90 130, 140 80, 200 80
+    C 230 80, 256 100, 256 100
+    C 256 100, 282 80, 312 80
+    C 372 80, 422 130, 422 190
+    C 422 280, 332 350, 256 420 Z"/>
+
+  <!-- Puls čára -->
+  <polyline
+    fill="none"
+    stroke="#D32F2F"
+    stroke-width="16"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    points="120,240 180,240 200,200 230,280 260,180 290,280 320,220 340,240 400,240"/>
+</svg>

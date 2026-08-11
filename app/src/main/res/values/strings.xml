@@ -147,6 +147,12 @@
     <string name="invalid_file_format">Invalid file format</string>
     <string name="import_success">Imported: %1$d workouts, %2$d exercises</string>
     <string name="import_error">Import error: %s</string>
+    <string name="export_exercises">Export exercises</string>
+    <string name="import_exercises">Import exercises</string>
+    <string name="exercises_export_success">Exported %d exercises</string>
+    <string name="exercises_import_success">Imported %d exercises</string>
+    <string name="exercises_import_with_skipped">Imported %1$d exercises, skipped %2$d duplicates</string>
+    <string name="no_exercises_to_export">No exercises to export</string>
     <string name="delete_confirm">Really delete \'%s\'?</string>
     <string name="max_weight_kg">Max weight (kg)</string>
     <string name="set_label">Set %d:</string>

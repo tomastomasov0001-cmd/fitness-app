@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Pozadí - gradient fialový -->
+  <defs>
+    <linearGradient id="bg4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#9C27B0"/>
+      <stop offset="100%" style="stop-color:#6200EE"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Zaoblený čtverec -->
+  <rect x="0" y="0" width="512" height="512" rx="100" fill="url(#bg4)"/>
+
+  <!-- Písmeno F - moderní styl -->
+  <g fill="#FFFFFF">
+    <!-- Svislá čára F -->
+    <rect x="140" y="100" width="50" height="312" rx="10"/>
+
+    <!-- Horní vodorovná čára F -->
+    <rect x="140" y="100" width="232" height="50" rx="10"/>
+
+    <!-- Prostřední vodorovná čára F -->
+    <rect x="140" y="220" width="180" height="45" rx="10"/>
+  </g>
+
+  <!-- Malá činka jako tečka/akcent -->
+  <g fill="#00E676">
+    <rect x="330" y="330" width="60" height="25" rx="5"/>
+    <rect x="310" y="320" width="20" height="45" rx="4"/>
+    <rect x="390" y="320" width="20" height="45" rx="4"/>
+  </g>
+</svg>

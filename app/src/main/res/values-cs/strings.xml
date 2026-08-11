@@ -147,6 +147,12 @@
     <string name="invalid_file_format">Neplatný formát souboru</string>
     <string name="import_success">Importováno: %1$d tréninků, %2$d cviků</string>
     <string name="import_error">Chyba při importu: %s</string>
+    <string name="export_exercises">Exportovat cviky</string>
+    <string name="import_exercises">Importovat cviky</string>
+    <string name="exercises_export_success">Exportováno %d cviků</string>
+    <string name="exercises_import_success">Importováno %d cviků</string>
+    <string name="exercises_import_with_skipped">Importováno %1$d cviků, přeskočeno %2$d duplicit</string>
+    <string name="no_exercises_to_export">Žádné cviky k exportu</string>
     <string name="delete_confirm">Opravdu smazat \'%s\'?</string>
     <string name="max_weight_kg">Max váha (kg)</string>
     <string name="set_label">Série %d:</string>
