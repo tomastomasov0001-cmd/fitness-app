@@ -8,8 +8,22 @@ Windows aplikace pro vytváření a správu cviků pro Fitness App.
 import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import json
+import os
 from datetime import datetime
 from typing import List, Dict, Optional
+
+# Cesta k uloženým cvikům (ve stejné složce jako exe/script)
+def get_data_path():
+    """Vrátí cestu k souboru s uloženými cviky."""
+    if getattr(sys, 'frozen', False):
+        # Spuštěno jako EXE
+        base_path = os.path.dirname(sys.executable)
+    else:
+        # Spuštěno jako Python script
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, "exercises_data.json")
+
+import sys
 
 class Exercise:
     """Třída reprezentující cvik."""
@@ -58,12 +72,13 @@ class ExerciseCreatorApp:
     def __init__(self, root: tk.Tk):
         self.root = root
         self.root.title("Fitness App - Editor cviků")
-        self.root.geometry("900x600")
-        self.root.minsize(800, 500)
+        self.root.geometry("950x650")
+        self.root.minsize(850, 550)
 
         # Seznam cviků
         self.exercises: List[Exercise] = []
         self.selected_index: Optional[int] = None
+        self.check_vars: List[tk.BooleanVar] = []  # Pro zaškrtávací políčka
 
         # Nastavení stylu
         self.setup_styles()
@@ -71,11 +86,18 @@ class ExerciseCreatorApp:
         # Vytvoření UI
         self.create_ui()
 
+        # Načtení uložených cviků
+        self.load_saved_exercises()
+
         # Bind klávesové zkratky
         self.root.bind("<Control-s>", lambda e: self.export_exercises())
         self.root.bind("<Control-o>", lambda e: self.import_exercises())
         self.root.bind("<Control-n>", lambda e: self.clear_form())
         self.root.bind("<Delete>", lambda e: self.delete_exercise())
+        self.root.bind("<Control-a>", lambda e: self.select_all())
+
+        # Uložení při zavření
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def setup_styles(self):
         """Nastavení stylů pro ttk widgety."""
@@ -160,32 +182,46 @@ class ExerciseCreatorApp:
         # === PRAVÝ PANEL - SEZNAM ===
         ttk.Label(right_frame, text="Seznam cviků", style="Header.TLabel").pack(anchor=tk.W, pady=(0, 10))
 
-        # Seznam s posuvníkem
-        list_frame = ttk.Frame(right_frame)
-        list_frame.pack(fill=tk.BOTH, expand=True)
+        # Tlačítka pro výběr
+        select_frame = ttk.Frame(right_frame)
+        select_frame.pack(fill=tk.X, pady=(0, 5))
 
-        scrollbar = ttk.Scrollbar(list_frame)
+        ttk.Button(select_frame, text="Vybrat vše", command=self.select_all).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(select_frame, text="Zrušit výběr", command=self.deselect_all).pack(side=tk.LEFT)
+
+        # Seznam s posuvníkem a checkboxy
+        list_container = ttk.Frame(right_frame)
+        list_container.pack(fill=tk.BOTH, expand=True)
+
+        # Canvas pro scrollování
+        self.canvas = tk.Canvas(list_container, bg="white", highlightthickness=1, highlightbackground="#ccc")
+        scrollbar = ttk.Scrollbar(list_container, orient="vertical", command=self.canvas.yview)
+
+        self.scrollable_frame = ttk.Frame(self.canvas)
+        self.scrollable_frame.bind(
+            "<Configure>",
+            lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
+        )
+
+        self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        self.canvas.configure(yscrollcommand=scrollbar.set)
+
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.exercise_listbox = tk.Listbox(list_frame, font=("Segoe UI", 11),
-                                           yscrollcommand=scrollbar.set,
-                                           selectmode=tk.SINGLE)
-        self.exercise_listbox.pack(fill=tk.BOTH, expand=True)
-        scrollbar.config(command=self.exercise_listbox.yview)
-
-        self.exercise_listbox.bind("<<ListboxSelect>>", self.on_select)
-        self.exercise_listbox.bind("<Double-1>", self.edit_exercise)
+        # Bind mouse wheel
+        self.canvas.bind_all("<MouseWheel>", self._on_mousewheel)
 
         # Počet cviků
-        self.count_label = ttk.Label(right_frame, text="Celkem: 0 cviků")
+        self.count_label = ttk.Label(right_frame, text="Celkem: 0 cviků | Vybráno: 0")
         self.count_label.pack(anchor=tk.W, pady=(5, 0))
 
         # Tlačítka pro seznam
         list_btn_frame = ttk.Frame(right_frame)
         list_btn_frame.pack(fill=tk.X, pady=(10, 0))
 
-        ttk.Button(list_btn_frame, text="Upravit", command=self.edit_exercise).pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(list_btn_frame, text="Smazat", command=self.delete_exercise).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(list_btn_frame, text="Upravit", command=self.edit_selected).pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(list_btn_frame, text="Smazat vybrané", command=self.delete_selected).pack(side=tk.LEFT, padx=(0, 5))
         ttk.Button(list_btn_frame, text="Smazat vše", command=self.clear_all).pack(side=tk.LEFT)
 
         # === SPODNÍ LIŠTA ===
@@ -193,10 +229,14 @@ class ExerciseCreatorApp:
         bottom_frame.pack(fill=tk.X, side=tk.BOTTOM)
 
         ttk.Button(bottom_frame, text="Import (Ctrl+O)", command=self.import_exercises).pack(side=tk.LEFT, padx=(0, 5))
-        ttk.Button(bottom_frame, text="Export (Ctrl+S)", command=self.export_exercises, style="Accent.TButton").pack(side=tk.LEFT)
+        ttk.Button(bottom_frame, text="Export vybraných (Ctrl+S)", command=self.export_exercises, style="Accent.TButton").pack(side=tk.LEFT)
 
-        ttk.Label(bottom_frame, text="Fitness App - Editor cviků v1.0",
+        ttk.Label(bottom_frame, text="Cviky se automaticky ukládají",
                   foreground="gray").pack(side=tk.RIGHT)
+
+    def _on_mousewheel(self, event):
+        """Scrollování kolečkem myši."""
+        self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
     def toggle_sets(self):
         """Přepnutí dostupnosti spinboxu pro série."""
@@ -217,8 +257,51 @@ class ExerciseCreatorApp:
         self.sets_spinbox.config(state="normal")
         self.selected_index = None
         self.add_btn.config(text="Přidat cvik")
-        self.exercise_listbox.selection_clear(0, tk.END)
         self.name_entry.focus()
+
+    def refresh_list(self):
+        """Obnovení seznamu cviků."""
+        # Smazat všechny widgety
+        for widget in self.scrollable_frame.winfo_children():
+            widget.destroy()
+
+        self.check_vars.clear()
+
+        # Vytvořit nové položky
+        for i, exercise in enumerate(self.exercises):
+            self.create_exercise_row(i, exercise)
+
+        self.update_count()
+
+    def create_exercise_row(self, index: int, exercise: Exercise):
+        """Vytvoření řádku pro cvik."""
+        row_frame = ttk.Frame(self.scrollable_frame)
+        row_frame.pack(fill=tk.X, padx=5, pady=2)
+
+        # Checkbox
+        var = tk.BooleanVar(value=False)
+        self.check_vars.append(var)
+
+        cb = ttk.Checkbutton(row_frame, variable=var, command=self.update_count)
+        cb.pack(side=tk.LEFT)
+
+        # Název a typ
+        types = []
+        if exercise.has_reps:
+            types.append("opak.")
+        if exercise.has_weight:
+            types.append("váha")
+        if exercise.has_time:
+            types.append("čas")
+        type_str = ", ".join(types) if types else "bez záznamu"
+
+        label_text = f"{exercise.name}  [{type_str}]"
+        label = ttk.Label(row_frame, text=label_text, font=("Segoe UI", 10))
+        label.pack(side=tk.LEFT, padx=(5, 0))
+
+        # Bind double-click pro editaci
+        label.bind("<Double-1>", lambda e, idx=index: self.edit_exercise(idx))
+        row_frame.bind("<Double-1>", lambda e, idx=index: self.edit_exercise(idx))
 
     def add_exercise(self):
         """Přidání nebo úprava cviku."""
@@ -242,44 +325,18 @@ class ExerciseCreatorApp:
         if self.selected_index is not None:
             # Úprava existujícího
             self.exercises[self.selected_index] = exercise
-            self.exercise_listbox.delete(self.selected_index)
-            self.exercise_listbox.insert(self.selected_index, self.format_exercise(exercise))
         else:
             # Přidání nového
             self.exercises.append(exercise)
-            self.exercise_listbox.insert(tk.END, self.format_exercise(exercise))
 
-        self.update_count()
+        self.refresh_list()
         self.clear_form()
+        self.save_exercises()
 
-    def format_exercise(self, exercise: Exercise) -> str:
-        """Formátování cviku pro zobrazení v seznamu."""
-        types = []
-        if exercise.has_reps:
-            types.append("opak.")
-        if exercise.has_weight:
-            types.append("váha")
-        if exercise.has_time:
-            types.append("čas")
-
-        type_str = ", ".join(types) if types else "bez záznamu"
-        return f"{exercise.name} [{type_str}]"
-
-    def on_select(self, event):
-        """Při výběru cviku v seznamu."""
-        selection = self.exercise_listbox.curselection()
-        if selection:
-            self.selected_index = selection[0]
-
-    def edit_exercise(self, event=None):
-        """Úprava vybraného cviku."""
-        if self.selected_index is None:
-            selection = self.exercise_listbox.curselection()
-            if not selection:
-                return
-            self.selected_index = selection[0]
-
-        exercise = self.exercises[self.selected_index]
+    def edit_exercise(self, index: int):
+        """Úprava cviku podle indexu."""
+        self.selected_index = index
+        exercise = self.exercises[index]
 
         # Naplnění formuláře
         self.name_entry.delete(0, tk.END)
@@ -298,20 +355,33 @@ class ExerciseCreatorApp:
         self.add_btn.config(text="Uložit změny")
         self.name_entry.focus()
 
-    def delete_exercise(self):
-        """Smazání vybraného cviku."""
-        selection = self.exercise_listbox.curselection()
-        if not selection:
+    def edit_selected(self):
+        """Úprava prvního vybraného cviku."""
+        for i, var in enumerate(self.check_vars):
+            if var.get():
+                self.edit_exercise(i)
+                return
+        messagebox.showinfo("Info", "Vyberte cvik k úpravě.")
+
+    def delete_selected(self):
+        """Smazání vybraných cviků."""
+        selected_indices = [i for i, var in enumerate(self.check_vars) if var.get()]
+
+        if not selected_indices:
+            messagebox.showinfo("Info", "Vyberte cviky ke smazání.")
             return
 
-        index = selection[0]
-        exercise = self.exercises[index]
+        count = len(selected_indices)
+        msg = f"Opravdu smazat {count} {'cvik' if count == 1 else 'cviků'}?"
 
-        if messagebox.askyesno("Potvrdit smazání", f"Opravdu smazat '{exercise.name}'?"):
-            del self.exercises[index]
-            self.exercise_listbox.delete(index)
-            self.update_count()
+        if messagebox.askyesno("Potvrdit smazání", msg):
+            # Smazat od konce, aby se nezměnily indexy
+            for i in reversed(selected_indices):
+                del self.exercises[i]
+
+            self.refresh_list()
             self.clear_form()
+            self.save_exercises()
 
     def clear_all(self):
         """Smazání všech cviků."""
@@ -320,28 +390,54 @@ class ExerciseCreatorApp:
 
         if messagebox.askyesno("Potvrdit smazání", "Opravdu smazat všechny cviky?"):
             self.exercises.clear()
-            self.exercise_listbox.delete(0, tk.END)
-            self.update_count()
+            self.refresh_list()
             self.clear_form()
+            self.save_exercises()
+
+    def select_all(self):
+        """Vybrat všechny cviky."""
+        for var in self.check_vars:
+            var.set(True)
+        self.update_count()
+
+    def deselect_all(self):
+        """Zrušit výběr všech cviků."""
+        for var in self.check_vars:
+            var.set(False)
+        self.update_count()
 
     def update_count(self):
         """Aktualizace počtu cviků."""
-        count = len(self.exercises)
-        if count == 0:
-            text = "Celkem: 0 cviků"
-        elif count == 1:
-            text = "Celkem: 1 cvik"
-        elif count < 5:
-            text = f"Celkem: {count} cviky"
+        total = len(self.exercises)
+        selected = sum(1 for var in self.check_vars if var.get())
+
+        if total == 0:
+            text = "Celkem: 0 cviků | Vybráno: 0"
+        elif total == 1:
+            text = f"Celkem: 1 cvik | Vybráno: {selected}"
+        elif total < 5:
+            text = f"Celkem: {total} cviky | Vybráno: {selected}"
         else:
-            text = f"Celkem: {count} cviků"
+            text = f"Celkem: {total} cviků | Vybráno: {selected}"
+
         self.count_label.config(text=text)
 
     def export_exercises(self):
-        """Export cviků do JSON souboru."""
-        if not self.exercises:
-            messagebox.showwarning("Chyba", "Nejsou žádné cviky k exportu!")
-            return
+        """Export vybraných cviků do JSON souboru."""
+        selected_indices = [i for i, var in enumerate(self.check_vars) if var.get()]
+
+        if not selected_indices:
+            # Pokud nic není vybráno, zeptej se
+            if not self.exercises:
+                messagebox.showwarning("Chyba", "Nejsou žádné cviky k exportu!")
+                return
+
+            if messagebox.askyesno("Export", "Nejsou vybrány žádné cviky.\nExportovat všechny?"):
+                selected_indices = list(range(len(self.exercises)))
+            else:
+                return
+
+        exercises_to_export = [self.exercises[i] for i in selected_indices]
 
         filename = filedialog.asksaveasfilename(
             defaultextension=".json",
@@ -354,20 +450,20 @@ class ExerciseCreatorApp:
             return
 
         # Přiřazení ID
-        for i, exercise in enumerate(self.exercises, start=1):
+        for i, exercise in enumerate(exercises_to_export, start=1):
             exercise.id = i
 
         backup_data = {
             "version": 1,
             "exportDate": int(datetime.now().timestamp() * 1000),
-            "exercises": [ex.to_dict() for ex in self.exercises]
+            "exercises": [ex.to_dict() for ex in exercises_to_export]
         }
 
         try:
             with open(filename, "w", encoding="utf-8") as f:
                 json.dump(backup_data, f, ensure_ascii=False, indent=2)
 
-            messagebox.showinfo("Hotovo", f"Exportováno {len(self.exercises)} cviků do:\n{filename}")
+            messagebox.showinfo("Hotovo", f"Exportováno {len(exercises_to_export)} cviků do:\n{filename}")
         except Exception as e:
             messagebox.showerror("Chyba", f"Nepodařilo se uložit soubor:\n{str(e)}")
 
@@ -398,11 +494,11 @@ class ExerciseCreatorApp:
                 # Kontrola duplicit
                 if exercise.name.lower() not in existing_names:
                     self.exercises.append(exercise)
-                    self.exercise_listbox.insert(tk.END, self.format_exercise(exercise))
                     existing_names.add(exercise.name.lower())
                     imported += 1
 
-            self.update_count()
+            self.refresh_list()
+            self.save_exercises()
 
             skipped = len(data["exercises"]) - imported
             if skipped > 0:
@@ -414,6 +510,44 @@ class ExerciseCreatorApp:
             messagebox.showerror("Chyba", "Neplatný JSON soubor!")
         except Exception as e:
             messagebox.showerror("Chyba", f"Nepodařilo se načíst soubor:\n{str(e)}")
+
+    def save_exercises(self):
+        """Uložení cviků do lokálního souboru."""
+        data = {
+            "version": 1,
+            "exercises": [ex.to_dict() for ex in self.exercises]
+        }
+
+        try:
+            with open(get_data_path(), "w", encoding="utf-8") as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"Chyba při ukládání: {e}")
+
+    def load_saved_exercises(self):
+        """Načtení uložených cviků."""
+        data_path = get_data_path()
+
+        if not os.path.exists(data_path):
+            return
+
+        try:
+            with open(data_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            if "exercises" in data:
+                for ex_data in data["exercises"]:
+                    self.exercises.append(Exercise.from_dict(ex_data))
+
+                self.refresh_list()
+
+        except Exception as e:
+            print(f"Chyba při načítání: {e}")
+
+    def on_closing(self):
+        """Při zavření okna."""
+        self.save_exercises()
+        self.root.destroy()
 
 
 def main():
