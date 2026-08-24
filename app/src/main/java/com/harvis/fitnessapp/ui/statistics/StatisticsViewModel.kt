@@ -69,14 +69,18 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
 
     fun loadAllStatistics() {
         viewModelScope.launch {
-            loadDashboardStats()
-            loadWeeklyStats()
-            loadMonthlyStats()
-            loadVariantDistribution()
-            loadWorkoutFrequency()
-            loadHeatmapData()
-            loadExerciseRecords()
-            loadExercisesWithData()
+            try {
+                loadDashboardStats()
+                loadWeeklyStats()
+                loadMonthlyStats()
+                loadVariantDistribution()
+                loadWorkoutFrequency()
+                loadHeatmapData()
+                loadExerciseRecords()
+                loadExercisesWithData()
+            } catch (e: Exception) {
+                android.util.Log.e("StatisticsViewModel", "Error loading stats: ${e.message}", e)
+            }
         }
     }
 

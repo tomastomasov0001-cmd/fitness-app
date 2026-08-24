@@ -30,6 +30,10 @@ class WorkoutFragment : Fragment() {
     private lateinit var variantsAdapter: WorkoutVariantAdapter
     private var isViewOnly: Boolean = false
     private var isEditingCompleted: Boolean = false
+    private var isSettingUpViews: Boolean = false  // Flag pro blokaci TextWatcheru behem inicializace
+    private var lastRefreshViewOnly: Boolean? = null  // Pro zabraneni duplicitnimu refreshi
+    private var lastRefreshEditingCompleted: Boolean? = null
+    private var viewsVersion: Int = 0  // Verze pro identifikaci starych TextWatcheru
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,11 +57,21 @@ class WorkoutFragment : Fragment() {
             val variantId = args.getLong("variantId", 0)
             val workoutLogId = args.getLong("workoutLogId", 0)
             val viewOnly = args.getBoolean("viewOnly", false)
+            val editMode = args.getBoolean("editMode", false)
             if (variantId > 0 && viewModel.isWorkoutActive.value != true) {
-                if (viewOnly && workoutLogId > 0) {
-                    viewModel.loadCompletedWorkout(variantId, workoutLogId)
-                } else {
-                    viewModel.startWorkoutById(variantId, workoutLogId)
+                when {
+                    editMode && workoutLogId > 0 -> {
+                        // Primo do editacniho rezimu (z kalendare tlacitko Upravit)
+                        viewModel.loadCompletedWorkoutForEdit(variantId, workoutLogId)
+                    }
+                    viewOnly && workoutLogId > 0 -> {
+                        // Jen prohlizeni
+                        viewModel.loadCompletedWorkout(variantId, workoutLogId)
+                    }
+                    else -> {
+                        // Novy trenink nebo pokracovani v nedokoncenem
+                        viewModel.startWorkoutById(variantId, workoutLogId)
+                    }
                 }
                 // Clear arguments to prevent re-starting on config change
                 arguments = null
@@ -78,6 +92,12 @@ class WorkoutFragment : Fragment() {
             viewModel.enableEditing()
         }
 
+        // Tlacitko Zrusit - zavre bez ulozeni
+        binding.cancelButton.setOnClickListener {
+            viewModel.closeViewMode()
+            findNavController().navigateUp()
+        }
+
         binding.finishWorkoutButton.setOnClickListener {
             when {
                 isViewOnly -> {
@@ -85,11 +105,84 @@ class WorkoutFragment : Fragment() {
                     findNavController().navigateUp()
                 }
                 isEditingCompleted -> {
+                    // DULEZITE: Precist hodnoty z UI PRED ulozenim
+                    collectDataFromUI()
+                    // Disable button to prevent double-tap
+                    binding.finishWorkoutButton.isEnabled = false
+                    binding.cancelButton.isEnabled = false
                     viewModel.saveCompletedWorkout()
-                    findNavController().navigateUp()
+                    // Navigation happens in observer when save completes
                 }
                 else -> {
                     showFinishDialog()
+                }
+            }
+        }
+
+        // Observe save completion to navigate AFTER save is done
+        viewModel.saveCompleted.observe(viewLifecycleOwner) { completed ->
+            if (completed) {
+                viewModel.resetSaveCompleted()
+                findNavController().navigateUp()
+            }
+        }
+
+        // Observe finish completion to navigate AFTER finish is done
+        viewModel.finishCompleted.observe(viewLifecycleOwner) { completed ->
+            if (completed) {
+                viewModel.resetFinishCompleted()
+                findNavController().navigate(R.id.calendarFragment)
+            }
+        }
+    }
+
+    /**
+     * Precte vsechny hodnoty z UI inputu a ulozi je do modelu.
+     * Toto zajisti, ze se ulozi PRESNE to, co uzivatel vidi.
+     */
+    private fun collectDataFromUI() {
+        val container = binding.exercisesContainer
+        val exercises = viewModel.exercises.value ?: return
+
+        android.util.Log.e("WORKOUT_DEBUG", "collectDataFromUI: containerChildCount=${container.childCount}, exercisesSize=${exercises.size}")
+
+        for (exerciseIndex in 0 until container.childCount) {
+            val exerciseView = container.getChildAt(exerciseIndex)
+            val setsContainer = exerciseView.findViewById<LinearLayout>(R.id.setsContainer)
+
+            if (exerciseIndex < exercises.size) {
+                val activeExercise = exercises[exerciseIndex]
+
+                android.util.Log.e("WORKOUT_DEBUG", "  Exercise $exerciseIndex: setsContainerChildCount=${setsContainer?.childCount}, modelSetsSize=${activeExercise.sets.size}")
+
+                for (setIndex in 0 until (setsContainer?.childCount ?: 0)) {
+                    if (setIndex < activeExercise.sets.size) {
+                        val setView = setsContainer.getChildAt(setIndex)
+                        val setData = activeExercise.sets[setIndex]
+
+                        // Precist hodnoty primo z UI
+                        val repsInput = setView.findViewById<TextInputEditText>(R.id.repsInput)
+                        val weightInput = setView.findViewById<TextInputEditText>(R.id.weightInput)
+                        val hoursInput = setView.findViewById<TextInputEditText>(R.id.hoursInput)
+                        val minutesInput = setView.findViewById<TextInputEditText>(R.id.minutesInput)
+                        val secondsInput = setView.findViewById<TextInputEditText>(R.id.secondsInput)
+
+                        val repsText = repsInput?.text?.toString()
+                        val weightText = weightInput?.text?.toString()
+
+                        android.util.Log.e("WORKOUT_DEBUG", "    Set $setIndex: repsInput=$repsText, weightInput=$weightText, repsInputNull=${repsInput == null}")
+
+                        // Aktualizovat model z UI hodnot
+                        setData.reps = repsText?.toIntOrNull() ?: 0
+                        setData.weight = weightText?.toFloatOrNull() ?: 0f
+
+                        val hours = hoursInput?.text?.toString()?.toIntOrNull() ?: 0
+                        val minutes = minutesInput?.text?.toString()?.toIntOrNull() ?: 0
+                        val seconds = secondsInput?.text?.toString()?.toIntOrNull() ?: 0
+                        setData.timeSeconds = hours * 3600 + minutes * 60 + seconds
+
+                        android.util.Log.e("WORKOUT_DEBUG", "    Set $setIndex AFTER: reps=${setData.reps}, weight=${setData.weight}")
+                    }
                 }
             }
         }
@@ -124,6 +217,9 @@ class WorkoutFragment : Fragment() {
         }
 
         viewModel.exercises.observe(viewLifecycleOwner) { exercises ->
+            // Resetovat tracking pro dalsi refresh
+            lastRefreshViewOnly = null
+            lastRefreshEditingCompleted = null
             refreshExercisesDisplay()
         }
 
@@ -141,25 +237,42 @@ class WorkoutFragment : Fragment() {
     private fun updateViewModeUI() {
         when {
             isViewOnly -> {
+                // Rezim prohlizeni - tlacitko Zpet a Edit
                 binding.finishWorkoutButton.text = getString(R.string.back)
                 binding.editWorkoutButton.visibility = View.VISIBLE
+                binding.cancelButton.visibility = View.GONE
             }
             isEditingCompleted -> {
+                // Rezim editace dokonceneho treningu - Zrusit a Ulozit
                 binding.finishWorkoutButton.text = getString(R.string.save)
                 binding.editWorkoutButton.visibility = View.GONE
+                binding.cancelButton.visibility = View.VISIBLE
             }
             else -> {
+                // Novy trenink - tlacitko Dokoncit
                 binding.finishWorkoutButton.text = getString(R.string.finish)
                 binding.editWorkoutButton.visibility = View.GONE
+                binding.cancelButton.visibility = View.GONE
             }
         }
-        // Refresh display to update edit/view state
-        refreshExercisesDisplay()
+        // Refresh display pouze pokud se stav skutecne zmenil (zabraneni duplicitnimu refreshi)
+        if (lastRefreshViewOnly != isViewOnly || lastRefreshEditingCompleted != isEditingCompleted) {
+            lastRefreshViewOnly = isViewOnly
+            lastRefreshEditingCompleted = isEditingCompleted
+            refreshExercisesDisplay()
+        }
     }
 
     private fun refreshExercisesDisplay() {
         val exercises = viewModel.exercises.value ?: return
         val container = binding.exercisesContainer
+
+        // Inkrementovat verzi - stare TextWatchery budou ignorovany
+        viewsVersion++
+        val currentVersion = viewsVersion
+
+        // Nastavit flag PRED removeAllViews aby stare TextWatchery nemenily data
+        isSettingUpViews = true
         container.removeAllViews()
 
         exercises.forEachIndexed { exerciseIndex, activeExercise ->
@@ -188,19 +301,22 @@ class WorkoutFragment : Fragment() {
 
                 // Add sets
                 activeExercise.sets.forEachIndexed { setIndex, setData ->
-                    addSetView(setsContainer, exerciseIndex, setIndex, setData, activeExercise.exercise)
+                    addSetView(setsContainer, exerciseIndex, setIndex, setData, activeExercise.exercise, currentVersion)
                 }
             } else {
                 // Exercise without sets - show simple completion view
                 addSetButton.visibility = View.GONE
-                addSimpleExerciseView(setsContainer, exerciseIndex, activeExercise)
+                addSimpleExerciseView(setsContainer, exerciseIndex, activeExercise, currentVersion)
             }
 
             container.addView(exerciseView)
         }
+
+        // Inicializace dokoncena, povolit TextWatchery
+        isSettingUpViews = false
     }
 
-    private fun addSetView(container: LinearLayout, exerciseIndex: Int, setIndex: Int, setData: SetData, exercise: com.harvis.fitnessapp.data.Exercise) {
+    private fun addSetView(container: LinearLayout, exerciseIndex: Int, setIndex: Int, setData: SetData, exercise: com.harvis.fitnessapp.data.Exercise, expectedVersion: Int) {
         val setView = layoutInflater.inflate(R.layout.item_workout_set, container, false)
 
         val setNumber = setView.findViewById<TextView>(R.id.setNumber)
@@ -268,6 +384,8 @@ class WorkoutFragment : Fragment() {
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                     override fun afterTextChanged(s: Editable?) {
+                        // Ignorovat behem inicializace nebo pokud je stary TextWatcher
+                        if (isSettingUpViews || expectedVersion != viewsVersion) return
                         val reps = s.toString().toIntOrNull() ?: 0
                         val weight = weightInput.text.toString().toFloatOrNull() ?: 0f
                         viewModel.updateSet(exerciseIndex, setIndex, reps, weight)
@@ -280,6 +398,8 @@ class WorkoutFragment : Fragment() {
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                     override fun afterTextChanged(s: Editable?) {
+                        // Ignorovat behem inicializace nebo pokud je stary TextWatcher
+                        if (isSettingUpViews || expectedVersion != viewsVersion) return
                         val reps = repsInput.text.toString().toIntOrNull() ?: 0
                         val weight = s.toString().toFloatOrNull() ?: 0f
                         viewModel.updateSet(exerciseIndex, setIndex, reps, weight)
@@ -293,6 +413,8 @@ class WorkoutFragment : Fragment() {
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                     override fun afterTextChanged(s: Editable?) {
+                        // Ignorovat behem inicializace nebo pokud je stary TextWatcher
+                        if (isSettingUpViews || expectedVersion != viewsVersion) return
                         val hours = hoursInput.text.toString().toIntOrNull() ?: 0
                         val minutes = minutesInput.text.toString().toIntOrNull() ?: 0
                         val seconds = secondsInput.text.toString().toIntOrNull() ?: 0
@@ -317,7 +439,7 @@ class WorkoutFragment : Fragment() {
         container.addView(setView)
     }
 
-    private fun addSimpleExerciseView(container: LinearLayout, exerciseIndex: Int, activeExercise: ActiveExercise) {
+    private fun addSimpleExerciseView(container: LinearLayout, exerciseIndex: Int, activeExercise: ActiveExercise, expectedVersion: Int) {
         val exercise = activeExercise.exercise
         val setData = if (activeExercise.sets.isNotEmpty()) activeExercise.sets[0] else SetData()
 
@@ -382,6 +504,8 @@ class WorkoutFragment : Fragment() {
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                     override fun afterTextChanged(s: Editable?) {
+                        // Ignorovat behem inicializace nebo pokud je stary TextWatcher
+                        if (isSettingUpViews || expectedVersion != viewsVersion) return
                         val reps = s.toString().toIntOrNull() ?: 0
                         val weight = weightInput.text.toString().toFloatOrNull() ?: 0f
                         viewModel.updateSet(exerciseIndex, 0, reps, weight)
@@ -395,6 +519,8 @@ class WorkoutFragment : Fragment() {
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                     override fun afterTextChanged(s: Editable?) {
+                        // Ignorovat behem inicializace nebo pokud je stary TextWatcher
+                        if (isSettingUpViews || expectedVersion != viewsVersion) return
                         val reps = repsInput.text.toString().toIntOrNull() ?: 0
                         val weight = s.toString().toFloatOrNull() ?: 0f
                         viewModel.updateSet(exerciseIndex, 0, reps, weight)
@@ -408,6 +534,8 @@ class WorkoutFragment : Fragment() {
                     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
                     override fun afterTextChanged(s: Editable?) {
+                        // Ignorovat behem inicializace nebo pokud je stary TextWatcher
+                        if (isSettingUpViews || expectedVersion != viewsVersion) return
                         val hours = hoursInput.text.toString().toIntOrNull() ?: 0
                         val minutes = minutesInput.text.toString().toIntOrNull() ?: 0
                         val secs = secondsInput.text.toString().toIntOrNull() ?: 0
@@ -436,8 +564,12 @@ class WorkoutFragment : Fragment() {
             .setTitle(R.string.finish_workout_title)
             .setMessage(R.string.finish_workout_message)
             .setPositiveButton(R.string.finish) { _, _ ->
+                // DULEZITE: Precist hodnoty z UI PRED ulozenim
+                collectDataFromUI()
+                // Disable buttons to prevent double-tap
+                binding.finishWorkoutButton.isEnabled = false
                 viewModel.finishWorkout()
-                findNavController().navigate(R.id.calendarFragment)
+                // Navigation happens in observer when finish completes
             }
             .setNegativeButton(R.string.cancel_workout) { _, _ ->
                 viewModel.cancelWorkout()
@@ -448,6 +580,10 @@ class WorkoutFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        // DULEZITE: Zablokovat TextWatchery pred destroyem views
+        // aby nepresaly data pri navigaci
+        isSettingUpViews = true
+        viewsVersion++  // Invalidovat vsechny aktivni TextWatchery
         super.onDestroyView()
         _binding = null
     }

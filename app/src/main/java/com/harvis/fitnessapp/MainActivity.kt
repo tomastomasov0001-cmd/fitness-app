@@ -8,6 +8,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.harvis.fitnessapp.databinding.ActivityMainBinding
 import com.harvis.fitnessapp.util.LanguageHelper
+import com.harvis.fitnessapp.util.PremiumDialogHelper
+import com.harvis.fitnessapp.util.PremiumManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,6 +36,18 @@ class MainActivity : AppCompatActivity() {
 
         // Pri kliknuti na polozku v dolni navigaci vzdy prejit na hlavni fragment
         binding.bottomNavigation.setOnItemSelectedListener { item ->
+            // Premium check for History tab
+            if (item.itemId == R.id.historyFragment && !PremiumManager.canAccessHistory(this)) {
+                PremiumDialogHelper.showHistoryLockedDialog(this)
+                return@setOnItemSelectedListener false
+            }
+
+            // Premium check for Statistics tab
+            if (item.itemId == R.id.statisticsFragment && !PremiumManager.canAccessStatistics(this)) {
+                PremiumDialogHelper.showStatisticsLockedDialog(this)
+                return@setOnItemSelectedListener false
+            }
+
             val navOptions = NavOptions.Builder()
                 .setPopUpTo(navController.graph.startDestinationId, false)
                 .setLaunchSingleTop(true)

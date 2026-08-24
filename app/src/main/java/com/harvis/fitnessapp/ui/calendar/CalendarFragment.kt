@@ -17,6 +17,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.harvis.fitnessapp.R
 import com.harvis.fitnessapp.data.WorkoutLog
 import com.harvis.fitnessapp.util.LanguageHelper
+import com.harvis.fitnessapp.util.PremiumManager
 import com.harvis.fitnessapp.data.WorkoutVariant
 import com.harvis.fitnessapp.databinding.FragmentCalendarBinding
 import com.kizitonwose.calendar.core.CalendarDay
@@ -77,6 +78,40 @@ class CalendarFragment : Fragment() {
         observeData()
         updateSelectedDateDisplay()
         loadWorkoutsForSelectedDate()
+        updatePremiumStatus()
+    }
+
+    private fun updatePremiumStatus() {
+        val context = requireContext()
+        val premiumType = PremiumManager.getPremiumType(context)
+
+        val statusText = when (premiumType) {
+            PremiumManager.PremiumType.PURCHASED -> getString(R.string.premium_status_premium)
+            PremiumManager.PremiumType.PROMO -> {
+                val remainingDays = PremiumManager.getPromoRemainingDays(context)
+                if (remainingDays == 1) {
+                    getString(R.string.premium_status_trial_one)
+                } else {
+                    getString(R.string.premium_status_trial, remainingDays)
+                }
+            }
+            PremiumManager.PremiumType.NONE -> getString(R.string.premium_status_free)
+        }
+
+        binding.premiumStatusText.text = statusText
+
+        // Nastavit zaoblené pozadí podle stavu
+        val backgroundColor = when (premiumType) {
+            PremiumManager.PremiumType.PURCHASED -> 0xFF4CAF50.toInt() // zelená
+            PremiumManager.PremiumType.PROMO -> 0xFFFF9800.toInt() // oranžová
+            PremiumManager.PremiumType.NONE -> 0xFF757575.toInt() // šedá
+        }
+        val drawable = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = 12f * resources.displayMetrics.density
+            setColor(backgroundColor)
+        }
+        binding.premiumStatusText.background = drawable
     }
 
     private fun setupCalendar() {
@@ -282,7 +317,7 @@ class CalendarFragment : Fragment() {
                             val bundle = bundleOf(
                                 "variantId" to log.variantId,
                                 "workoutLogId" to log.id,
-                                "viewOnly" to true  // This triggers loadCompletedWorkout which enables editing
+                                "editMode" to true  // Primo do editacniho rezimu
                             )
                             findNavController().navigate(R.id.workoutFragment, bundle)
                         }
@@ -381,6 +416,16 @@ class CalendarFragment : Fragment() {
             }
             .setNegativeButton(R.string.cancel, null)
             .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updatePremiumStatus()
+        // Refreshnout data pri navratu z jineho fragmentu (napr. po dokonceni treninku)
+        loadWorkoutsForSelectedDate()
+        binding.calendarView.findFirstVisibleMonth()?.let { month ->
+            loadWorkoutsForMonth(month.yearMonth)
+        }
     }
 
     override fun onDestroyView() {

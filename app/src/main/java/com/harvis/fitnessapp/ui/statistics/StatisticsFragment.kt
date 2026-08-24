@@ -76,66 +76,74 @@ class StatisticsFragment : Fragment() {
 
     private fun observeViewModel() {
         viewModel.dashboardStats.observe(viewLifecycleOwner) { stats ->
-            binding.tvTotalWorkouts.text = stats.totalWorkouts.toString()
-            binding.tvTrainingDays.text = stats.trainingDaysThisMonth.toString()
-            binding.tvCurrentStreak.text = stats.currentStreak.toString()
-            binding.tvBestStreak.text = stats.bestStreak.toString()
+            stats?.let {
+                binding.tvTotalWorkouts.text = it.totalWorkouts.toString()
+                binding.tvTrainingDays.text = it.trainingDaysThisMonth.toString()
+                binding.tvCurrentStreak.text = it.currentStreak.toString()
+                binding.tvBestStreak.text = it.bestStreak.toString()
+            }
         }
 
         viewModel.weeklyStats.observe(viewLifecycleOwner) { stats ->
-            binding.tvWeekWorkouts.text = stats.workoutsThisWeek.toString()
-            binding.tvWeekVolume.text = stats.totalVolume.toInt().toString()
-            binding.tvWeekSets.text = stats.totalSets.toString()
+            stats?.let {
+                binding.tvWeekWorkouts.text = it.workoutsThisWeek.toString()
+                binding.tvWeekVolume.text = it.totalVolume.toInt().toString()
+                binding.tvWeekSets.text = it.totalSets.toString()
+            }
         }
 
         viewModel.monthlyStats.observe(viewLifecycleOwner) { stats ->
-            binding.tvMonthWorkouts.text = stats.workoutsThisMonth.toString()
-            val changeText = when {
-                stats.change > 0 -> getString(R.string.compared_to_last_month_positive, stats.change)
-                stats.change < 0 -> getString(R.string.compared_to_last_month_negative, stats.change)
-                else -> getString(R.string.same_as_last_month)
-            }
-            binding.tvMonthChange.text = changeText
-            binding.tvMonthChange.setTextColor(
-                when {
-                    stats.change > 0 -> Color.parseColor("#4CAF50")
-                    stats.change < 0 -> Color.parseColor("#F44336")
-                    else -> Color.GRAY
+            stats?.let {
+                binding.tvMonthWorkouts.text = it.workoutsThisMonth.toString()
+                val changeText = when {
+                    it.change > 0 -> getString(R.string.compared_to_last_month_positive, it.change)
+                    it.change < 0 -> getString(R.string.compared_to_last_month_negative, it.change)
+                    else -> getString(R.string.same_as_last_month)
                 }
-            )
+                binding.tvMonthChange.text = changeText
+                binding.tvMonthChange.setTextColor(
+                    when {
+                        it.change > 0 -> Color.parseColor("#4CAF50")
+                        it.change < 0 -> Color.parseColor("#F44336")
+                        else -> Color.GRAY
+                    }
+                )
+            }
         }
 
         viewModel.variantDistribution.observe(viewLifecycleOwner) { distribution ->
-            setupPieChart(distribution)
+            distribution?.let { setupPieChart(it) }
         }
 
         viewModel.workoutFrequency.observe(viewLifecycleOwner) { frequency ->
-            setupBarChart(frequency)
+            frequency?.let { setupBarChart(it) }
         }
 
         viewModel.heatmapData.observe(viewLifecycleOwner) { data ->
-            setupHeatmap(data)
+            data?.let { setupHeatmap(it) }
         }
 
         viewModel.exerciseRecords.observe(viewLifecycleOwner) { records ->
-            if (records.isEmpty()) {
+            val list = records ?: emptyList()
+            if (list.isEmpty()) {
                 binding.rvRecords.visibility = View.GONE
                 binding.tvNoRecords.visibility = View.VISIBLE
             } else {
                 binding.rvRecords.visibility = View.VISIBLE
                 binding.tvNoRecords.visibility = View.GONE
-                recordsAdapter.submitList(records)
+                recordsAdapter.submitList(list)
             }
         }
 
         viewModel.exercisesWithData.observe(viewLifecycleOwner) { exercises ->
-            if (exercises.isEmpty()) {
+            val list = exercises ?: emptyList()
+            if (list.isEmpty()) {
                 binding.rvExercises.visibility = View.GONE
                 binding.tvNoExercises.visibility = View.VISIBLE
             } else {
                 binding.rvExercises.visibility = View.VISIBLE
                 binding.tvNoExercises.visibility = View.GONE
-                exerciseAdapter.submitList(exercises)
+                exerciseAdapter.submitList(list)
             }
         }
     }

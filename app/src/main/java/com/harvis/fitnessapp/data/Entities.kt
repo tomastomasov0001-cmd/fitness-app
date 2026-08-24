@@ -142,7 +142,8 @@ data class VariantWithCount(
     val id: Long,
     val name: String,
     val description: String,
-    val exerciseCount: Int
+    val exerciseCount: Int,
+    val createdAt: Long = 0  // Pridano pro zachovani pri editaci
 )
 
 // === STATISTIKY ===

@@ -1,0 +1,94 @@
+================================================================================
+                         VERZE 2.0 - AKTUALNI VERZE
+================================================================================
+
+TOTO JE AKTIVNI VERZE APLIKACE PRO VYVOJ!
+Verze 1.0 je archivovana a NEUPRAVUJE SE.
+
+--------------------------------------------------------------------------------
+Zmeny oproti v1.0:
+--------------------------------------------------------------------------------
+- Freemium model s Google Play Billing
+- Vicejazycna podpora (8 jazyku)
+- Statistiky treninku
+- Vylepsene UI/UX
+
+--------------------------------------------------------------------------------
+Freemium omezeni (FREE verze):
+--------------------------------------------------------------------------------
+- Max 1 treninkova varianta
+- Max 2 cviky na variantu
+- Bez pristupu k Historii
+- Bez pristupu ke Statistikam
+
+Premium verze: Vse bez omezeni
+
+--------------------------------------------------------------------------------
+Promo kody:
+--------------------------------------------------------------------------------
+Kazdy kod lze pouzit pouze JEDNOU na zarizeni!
+
+=== Bezne kody (platnost 7 dni) ===
+- FITNESS2024
+- BETAUSER
+- REVIEWER
+- TESTWEEK
+
+Po uplatneni:
+- Premium funkce aktivni na 7 dni
+- Na obrazovce se zobrazi "TRIAL (X dni)"
+- Po vyprseni je nutne zakoupit Premium nebo pouzit jiny kod
+
+=== Testersky kod (TRVALY premium) ===
+- TESTER2026
+
+=== VIP kody pro pratele (TRVALY premium) ===
+Format: VIP-XXXX (napr. VIP-1234, VIP-5765, VIP-9270)
+
+Jak generovat:
+1. Otevri Debug Menu (7x tap na "Moje treninky")
+2. Zadej heslo: 1196
+3. Vyber "Generovat VIP kod pro pritele"
+4. Zkopiruj a posli pritelovi
+
+Kazdy VIP kod:
+- Funguje pouze JEDNOU na jednom zarizeni
+- Aktivuje TRVALY premium
+- Je unikatni - muzes dat kazdemu pritelovi jiny
+
+--------------------------------------------------------------------------------
+Debug rezim:
+--------------------------------------------------------------------------------
+Aktivace: 7x klepnuti nebo dlouhe podrzeni na nadpis "Moje treninky"
+Heslo: 1196
+
+Debug menu moznosti:
+- Prepnout Premium - zapne/vypne zakoupeny premium stav
+- Resetovat promo kody - smaze historii pouzitych kodu (pro testovani)
+- Zadat promo kod - otevre dialog pro zadani kodu
+- Generovat VIP kod pro pritele - vytvori 5 unikatnich kodu
+- Zobrazit info - zobrazi aktualni stav premium a limity
+
+Status label na obrazovce Kalendar:
+  * "FREE" - zadny premium (seda barva)
+  * "TRIAL (X dni)" - promo kod aktivni (oranzova barva)
+  * "PREMIUM" - zakoupeno (zelena barva)
+
+--------------------------------------------------------------------------------
+Dulezite soubory:
+--------------------------------------------------------------------------------
+- PremiumManager.kt - sprava premium stavu, promo kodu, VIP kodu
+- PremiumDialogHelper.kt - dialogy pro upgrade
+- BillingManager.kt - Google Play Billing integrace
+- VariantsFragment.kt - debug menu s heslem
+- CalendarFragment.kt - zobrazeni premium statusu
+
+--------------------------------------------------------------------------------
+Struktura projektu:
+--------------------------------------------------------------------------------
+v1.0/ - ARCHIVOVANA, neupravovat!
+v2.0/ - AKTUALNI verze pro vyvoj
+
+--------------------------------------------------------------------------------
+Posledni aktualizace: 2026-07-29
+================================================================================

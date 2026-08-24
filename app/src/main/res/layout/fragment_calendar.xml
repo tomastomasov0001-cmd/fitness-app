@@ -21,13 +21,29 @@
 
         <TextView
             android:id="@+id/monthTitle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/nav_calendar"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="@color/on_surface" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/premiumStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:text="FREE"
+            android:textSize="11sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/languageButton"

@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "exercises": [
+    {
+      "id": 0,
+      "name": "t",
+      "description": "",
+      "hasSets": true,
+      "hasReps": true,
+      "hasWeight": true,
+      "hasTime": false,
+      "defaultSets": 4
+    },
+    {
+      "id": 0,
+      "name": "y",
+      "description": "",
+      "hasSets": true,
+      "hasReps": true,
+      "hasWeight": true,
+      "hasTime": false,
+      "defaultSets": 5
+    }
+  ]
+}

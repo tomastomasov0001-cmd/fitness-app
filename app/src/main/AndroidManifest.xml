@@ -4,6 +4,8 @@
 
     <!-- Povoleni pro pristup k fotkam a videum -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- Povoleni pro in-app nakupy -->
+    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
