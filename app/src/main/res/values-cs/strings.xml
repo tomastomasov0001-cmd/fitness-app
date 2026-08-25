@@ -189,4 +189,11 @@
     <string name="premium_status_trial">ZKOUŠKA (%d dní)</string>
     <string name="premium_status_trial_one">ZKOUŠKA (1 den)</string>
     <string name="premium_status_premium">PREMIUM</string>
+
+    <!-- Delete warnings -->
+    <string name="delete_warning_title">Upozornění</string>
+    <string name="delete_variant_warning">Opravdu chcete smazat trénink \'%s\'?\n\nTato akce je nevratná. Zvažte nejprve export dat.</string>
+    <string name="delete_exercise_warning">Opravdu chcete smazat cvik \'%s\'?\n\nTato akce je nevratná.</string>
+    <string name="export_first">Nejdřív exportovat</string>
+    <string name="delete_anyway">Smazat</string>
 </resources>

@@ -302,10 +302,16 @@ class ExercisesFragment : Fragment() {
 
     private fun showDeleteDialog(exercise: Exercise, variantCount: Int) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.delete)
-            .setMessage(getString(R.string.delete_exercise_confirm, exercise.name))
-            .setPositiveButton(R.string.delete) { _, _ ->
+            .setTitle(R.string.delete_warning_title)
+            .setMessage(getString(R.string.delete_exercise_warning, exercise.name))
+            .setPositiveButton(R.string.delete_anyway) { _, _ ->
                 viewModel.deleteExercise(exercise)
+            }
+            .setNeutralButton(R.string.export_first) { _, _ ->
+                // Spustit export cviků
+                if (currentExercises.isNotEmpty()) {
+                    exportLauncher.launch("exercises_backup.json")
+                }
             }
             .setNegativeButton(R.string.cancel, null)
             .show()

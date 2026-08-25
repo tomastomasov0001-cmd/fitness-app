@@ -31,8 +31,8 @@ class StatisticsFragment : Fragment() {
 
     private val viewModel: StatisticsViewModel by viewModels()
 
-    private lateinit var recordsAdapter: RecordsAdapter
-    private lateinit var exerciseAdapter: ExerciseSelectAdapter
+    private var recordsAdapter: RecordsAdapter? = null
+    private var exerciseAdapter: ExerciseSelectAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,31 +46,47 @@ class StatisticsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerViews()
-        observeViewModel()
+        try {
+            setupRecyclerViews()
+            observeViewModel()
+        } catch (e: Exception) {
+            android.util.Log.e("StatisticsFragment", "Error in onViewCreated: ${e.message}", e)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadAllStatistics()
+        try {
+            viewModel.loadAllStatistics()
+        } catch (e: Exception) {
+            android.util.Log.e("StatisticsFragment", "Error in onResume: ${e.message}", e)
+        }
     }
 
     private fun setupRecyclerViews() {
-        recordsAdapter = RecordsAdapter()
-        binding.rvRecords.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = recordsAdapter
-        }
+        try {
+            recordsAdapter = RecordsAdapter()
+            binding.rvRecords.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = recordsAdapter
+            }
 
-        exerciseAdapter = ExerciseSelectAdapter { exercise ->
-            findNavController().navigate(
-                R.id.action_statistics_to_exerciseStats,
-                bundleOf("exerciseId" to exercise.id)
-            )
-        }
-        binding.rvExercises.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = exerciseAdapter
+            exerciseAdapter = ExerciseSelectAdapter { exercise ->
+                try {
+                    findNavController().navigate(
+                        R.id.action_statistics_to_exerciseStats,
+                        bundleOf("exerciseId" to exercise.id)
+                    )
+                } catch (e: Exception) {
+                    android.util.Log.e("StatisticsFragment", "Navigation error: ${e.message}", e)
+                }
+            }
+            binding.rvExercises.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = exerciseAdapter
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("StatisticsFragment", "Error setupRecyclerViews: ${e.message}", e)
         }
     }
 
@@ -112,38 +128,64 @@ class StatisticsFragment : Fragment() {
         }
 
         viewModel.variantDistribution.observe(viewLifecycleOwner) { distribution ->
-            distribution?.let { setupPieChart(it) }
+            distribution?.let {
+                try {
+                    setupPieChart(it)
+                } catch (e: Exception) {
+                    android.util.Log.e("StatisticsFragment", "Error setupPieChart: ${e.message}", e)
+                }
+            }
         }
 
         viewModel.workoutFrequency.observe(viewLifecycleOwner) { frequency ->
-            frequency?.let { setupBarChart(it) }
+            frequency?.let {
+                try {
+                    setupBarChart(it)
+                } catch (e: Exception) {
+                    android.util.Log.e("StatisticsFragment", "Error setupBarChart: ${e.message}", e)
+                }
+            }
         }
 
         viewModel.heatmapData.observe(viewLifecycleOwner) { data ->
-            data?.let { setupHeatmap(it) }
+            data?.let {
+                try {
+                    setupHeatmap(it)
+                } catch (e: Exception) {
+                    android.util.Log.e("StatisticsFragment", "Error setupHeatmap: ${e.message}", e)
+                }
+            }
         }
 
         viewModel.exerciseRecords.observe(viewLifecycleOwner) { records ->
-            val list = records ?: emptyList()
-            if (list.isEmpty()) {
-                binding.rvRecords.visibility = View.GONE
-                binding.tvNoRecords.visibility = View.VISIBLE
-            } else {
-                binding.rvRecords.visibility = View.VISIBLE
-                binding.tvNoRecords.visibility = View.GONE
-                recordsAdapter.submitList(list)
+            try {
+                val list = records ?: emptyList()
+                if (list.isEmpty()) {
+                    binding.rvRecords.visibility = View.GONE
+                    binding.tvNoRecords.visibility = View.VISIBLE
+                } else {
+                    binding.rvRecords.visibility = View.VISIBLE
+                    binding.tvNoRecords.visibility = View.GONE
+                    recordsAdapter?.submitList(list)
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("StatisticsFragment", "Error records observer: ${e.message}", e)
             }
         }
 
         viewModel.exercisesWithData.observe(viewLifecycleOwner) { exercises ->
-            val list = exercises ?: emptyList()
-            if (list.isEmpty()) {
-                binding.rvExercises.visibility = View.GONE
-                binding.tvNoExercises.visibility = View.VISIBLE
-            } else {
-                binding.rvExercises.visibility = View.VISIBLE
-                binding.tvNoExercises.visibility = View.GONE
-                exerciseAdapter.submitList(list)
+            try {
+                val list = exercises ?: emptyList()
+                if (list.isEmpty()) {
+                    binding.rvExercises.visibility = View.GONE
+                    binding.tvNoExercises.visibility = View.VISIBLE
+                } else {
+                    binding.rvExercises.visibility = View.VISIBLE
+                    binding.tvNoExercises.visibility = View.GONE
+                    exerciseAdapter?.submitList(list)
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("StatisticsFragment", "Error exercises observer: ${e.message}", e)
             }
         }
     }

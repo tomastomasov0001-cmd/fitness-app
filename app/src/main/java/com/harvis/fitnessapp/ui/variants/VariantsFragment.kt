@@ -383,10 +383,14 @@ class VariantsFragment : Fragment() {
 
     private fun showDeleteDialog(variantId: Long, variantName: String) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(R.string.delete)
-            .setMessage(getString(R.string.delete_confirm, variantName))
-            .setPositiveButton(R.string.delete) { _, _ ->
+            .setTitle(R.string.delete_warning_title)
+            .setMessage(getString(R.string.delete_variant_warning, variantName))
+            .setPositiveButton(R.string.delete_anyway) { _, _ ->
                 viewModel.deleteVariantById(variantId)
+            }
+            .setNeutralButton(R.string.export_first) { _, _ ->
+                // Spustit export před smazáním
+                viewModel.exportData()
             }
             .setNegativeButton(R.string.cancel, null)
             .show()

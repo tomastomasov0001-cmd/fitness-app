@@ -37,54 +37,74 @@ data class ExerciseRecord(
 
 class StatisticsViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val dao = (application as FitnessApp).database.fitnessDao()
+    private val dao = try {
+        (application as FitnessApp).database.fitnessDao()
+    } catch (e: Exception) {
+        android.util.Log.e("StatisticsViewModel", "Error getting DAO: ${e.message}", e)
+        null
+    }
 
-    private val _dashboardStats = MutableLiveData<DashboardStats>()
+    private val _dashboardStats = MutableLiveData<DashboardStats>(DashboardStats())
     val dashboardStats: LiveData<DashboardStats> = _dashboardStats
 
-    private val _weeklyStats = MutableLiveData<WeeklyStats>()
+    private val _weeklyStats = MutableLiveData<WeeklyStats>(WeeklyStats())
     val weeklyStats: LiveData<WeeklyStats> = _weeklyStats
 
-    private val _monthlyStats = MutableLiveData<MonthlyStats>()
+    private val _monthlyStats = MutableLiveData<MonthlyStats>(MonthlyStats())
     val monthlyStats: LiveData<MonthlyStats> = _monthlyStats
 
-    private val _variantDistribution = MutableLiveData<List<VariantWorkoutCount>>()
+    private val _variantDistribution = MutableLiveData<List<VariantWorkoutCount>>(emptyList())
     val variantDistribution: LiveData<List<VariantWorkoutCount>> = _variantDistribution
 
-    private val _workoutFrequency = MutableLiveData<List<DateWorkoutCount>>()
+    private val _workoutFrequency = MutableLiveData<List<DateWorkoutCount>>(emptyList())
     val workoutFrequency: LiveData<List<DateWorkoutCount>> = _workoutFrequency
 
-    private val _heatmapData = MutableLiveData<List<DateWorkoutCount>>()
+    private val _heatmapData = MutableLiveData<List<DateWorkoutCount>>(emptyList())
     val heatmapData: LiveData<List<DateWorkoutCount>> = _heatmapData
 
-    private val _exerciseRecords = MutableLiveData<List<ExerciseRecord>>()
+    private val _exerciseRecords = MutableLiveData<List<ExerciseRecord>>(emptyList())
     val exerciseRecords: LiveData<List<ExerciseRecord>> = _exerciseRecords
 
-    private val _exercisesWithData = MutableLiveData<List<Exercise>>()
+    private val _exercisesWithData = MutableLiveData<List<Exercise>>(emptyList())
     val exercisesWithData: LiveData<List<Exercise>> = _exercisesWithData
 
     init {
-        loadAllStatistics()
+        if (dao != null) {
+            loadAllStatistics()
+        }
     }
 
     fun loadAllStatistics() {
         viewModelScope.launch {
-            try {
-                loadDashboardStats()
-                loadWeeklyStats()
-                loadMonthlyStats()
-                loadVariantDistribution()
-                loadWorkoutFrequency()
-                loadHeatmapData()
-                loadExerciseRecords()
-                loadExercisesWithData()
-            } catch (e: Exception) {
-                android.util.Log.e("StatisticsViewModel", "Error loading stats: ${e.message}", e)
+            try { loadDashboardStats() } catch (e: Exception) {
+                android.util.Log.e("StatisticsViewModel", "Error loadDashboardStats: ${e.message}", e)
+            }
+            try { loadWeeklyStats() } catch (e: Exception) {
+                android.util.Log.e("StatisticsViewModel", "Error loadWeeklyStats: ${e.message}", e)
+            }
+            try { loadMonthlyStats() } catch (e: Exception) {
+                android.util.Log.e("StatisticsViewModel", "Error loadMonthlyStats: ${e.message}", e)
+            }
+            try { loadVariantDistribution() } catch (e: Exception) {
+                android.util.Log.e("StatisticsViewModel", "Error loadVariantDistribution: ${e.message}", e)
+            }
+            try { loadWorkoutFrequency() } catch (e: Exception) {
+                android.util.Log.e("StatisticsViewModel", "Error loadWorkoutFrequency: ${e.message}", e)
+            }
+            try { loadHeatmapData() } catch (e: Exception) {
+                android.util.Log.e("StatisticsViewModel", "Error loadHeatmapData: ${e.message}", e)
+            }
+            try { loadExerciseRecords() } catch (e: Exception) {
+                android.util.Log.e("StatisticsViewModel", "Error loadExerciseRecords: ${e.message}", e)
+            }
+            try { loadExercisesWithData() } catch (e: Exception) {
+                android.util.Log.e("StatisticsViewModel", "Error loadExercisesWithData: ${e.message}", e)
             }
         }
     }
 
     private suspend fun loadDashboardStats() {
+        if (dao == null) return
         val totalWorkouts = dao.getTotalCompletedWorkouts()
 
         // Tento mesic
@@ -172,6 +192,7 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private suspend fun loadWeeklyStats() {
+        if (dao == null) return
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
         calendar.set(Calendar.HOUR_OF_DAY, 0)
@@ -206,6 +227,7 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private suspend fun loadMonthlyStats() {
+        if (dao == null) return
         val calendar = Calendar.getInstance()
 
         // Tento mesic
@@ -242,10 +264,12 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private suspend fun loadVariantDistribution() {
+        if (dao == null) return
         _variantDistribution.value = dao.getWorkoutCountsByVariant()
     }
 
     private suspend fun loadWorkoutFrequency() {
+        if (dao == null) return
         // Posledni 4 tydny
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.WEEK_OF_YEAR, -4)
@@ -262,10 +286,12 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private suspend fun loadHeatmapData() {
+        if (dao == null) return
         _heatmapData.value = dao.getAllWorkoutDates()
     }
 
     private suspend fun loadExerciseRecords() {
+        if (dao == null) return
         val exercises = dao.getExercisesWithData()
         val records = exercises.map { exercise ->
             ExerciseRecord(
@@ -278,6 +304,7 @@ class StatisticsViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private suspend fun loadExercisesWithData() {
+        if (dao == null) return
         _exercisesWithData.value = dao.getExercisesWithData()
     }
 }

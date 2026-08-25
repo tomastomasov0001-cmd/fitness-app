@@ -189,4 +189,11 @@
     <string name="premium_status_trial">TRIAL (%d days)</string>
     <string name="premium_status_trial_one">TRIAL (1 day)</string>
     <string name="premium_status_premium">PREMIUM</string>
+
+    <!-- Delete warnings -->
+    <string name="delete_warning_title">Warning</string>
+    <string name="delete_variant_warning">Are you sure you want to delete workout \'%s\'?\n\nThis action cannot be undone. Consider exporting your data first.</string>
+    <string name="delete_exercise_warning">Are you sure you want to delete exercise \'%s\'?\n\nThis action cannot be undone.</string>
+    <string name="export_first">Export first</string>
+    <string name="delete_anyway">Delete</string>
 </resources>

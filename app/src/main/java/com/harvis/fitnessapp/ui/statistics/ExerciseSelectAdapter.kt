@@ -28,7 +28,7 @@ class ExerciseSelectAdapter(
         itemView: View,
         private val onItemClick: (Exercise) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
-        private val tvExerciseName: TextView = itemView.findViewById(R.id.tvExerciseName)
+        private val tvExerciseName: TextView = itemView.findViewById(R.id.exerciseName)
 
         fun bind(exercise: Exercise) {
             tvExerciseName.text = exercise.name
