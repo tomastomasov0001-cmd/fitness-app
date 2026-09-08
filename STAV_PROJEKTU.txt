@@ -1,0 +1,61 @@
+==========================================
+STAV PROJEKTU - FITNESS APP
+==========================================
+Datum: 25.08.2026
+Projekt: d:\Harvis\programovani\Mobilni_aplikace\fitness_app\v2.0
+
+==========================================
+AKTUALNI VERZE
+==========================================
+- versionCode: 7
+- versionName: 2.1
+- compileSdk: 35
+- targetSdk: 35
+- Package: com.harvis.fitnessapp
+
+==========================================
+CO BYLO UDELANO
+==========================================
+1. Opravena chyba padu statistik (ExerciseSelectAdapter - spatne ID)
+2. Pridano varovani pri mazani s moznosti exportu
+3. Odstranena nepotrebna opravneni (READ_MEDIA_IMAGES, READ_MEDIA_VIDEO)
+4. Odstraneny nepouzivane knihovny (Glide, ExoPlayer)
+5. Zvyseno targetSdk na 35
+6. Zmenseny store assets (icon 512x512, feature graphic 1024x500)
+7. Vytvoren keystore pro podpis aplikace
+
+==========================================
+CO JE POTREBA DODELAT - GOOGLE PLAY
+==========================================
+1. Vyplnit formular "Obsah aplikace" -> "Citliva opravneni" (fotky/videa)
+   - Rict ze aplikace NEPOTREBUJE tato opravneni
+
+2. Nahrat novy AAB (versionCode 7) do Google Play Console
+   - V Android Studiu: Build -> Generate Signed Bundle / APK...
+   - Vybrat Android App Bundle, pouzit keystore
+
+3. Vyplnit zbyle polozky v "Dokoncete nastaveni aplikace"
+
+==========================================
+DULEZITE SOUBORY
+==========================================
+- Keystore: d:\Harvis\programovani\Mobilni_aplikace\fitness_app\v2.0\keystore.jks
+- Store assets: d:\Harvis\programovani\Mobilni_aplikace\fitness_app\v2.0\store_assets\
+  - icon_512.png (512x512)
+  - feature_graphic.png (1024x500)
+  - privacy_policy.html
+
+==========================================
+GITHUB
+==========================================
+Repo: https://github.com/tomastomasov0001-cmd/fitness-app
+Posledni commit: Priprava pro Google Play Store
+
+==========================================
+VETA PRO POKRACOVANI
+==========================================
+Po restartu PC napis Claude tuto vetu:
+
+"Pokracuj v projektu fitness app. Cesta: d:\Harvis\programovani\Mobilni_aplikace\fitness_app\v2.0 - precti si soubor STAV_PROJEKTU.txt"
+
+==========================================
